@@ -1,0 +1,13 @@
+{
+  "name": "breaking-change-detector",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@typescript-eslint/typescript-estree": "false5.14.0"
+  },
+  "dependencies": {
+    "typescript": "false4.6.2"
+  }
+}
