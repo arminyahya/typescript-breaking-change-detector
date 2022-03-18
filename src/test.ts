@@ -3,7 +3,9 @@ import util from 'util';
 
 const codeA = `
 export interface A {
-	
+	name: string;
+	age: number;
+	getAge: () => number;
 }
 `;
 const parsedCodeA = parse(codeA);

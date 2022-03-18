@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "type": "module",
   "devDependencies": {
-    "@typescript-eslint/typescript-estree": "false5.14.0"
+    "@types/node": "^17.0.21",
+    "@typescript-eslint/typescript-estree": "^5.14.0"
   },
   "dependencies": {
-    "typescript": "false4.6.2"
+    "typescript": "false4.6.2",
+    "utill": "false0.1.3"
   }
 }
