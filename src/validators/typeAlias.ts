@@ -14,6 +14,6 @@ export default function TypeAliasValidator(declarationA, codeB) {
 			sameMemberInDeclarationB
 		);
 	if (propertyDetailsErrorTypeAlias) {
-		throw propertyDetailsErrorTypeAlias;
+		return propertyDetailsErrorTypeAlias;
 	}
 }

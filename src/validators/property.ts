@@ -3,7 +3,7 @@ import { checkOptionalBeSame, checkReturnTypeBeSame, getSameProperty, isProperty
 export default function propertyValidator(property, codeB) {
 	const sameProperty = getSameProperty(property, codeB);
 	if (!sameProperty) {
-		throw "property removed!";
+		return "property removed!";
 	} else if (checkOptionalBeSame(property, sameProperty)) {
 		return "optional changed!";
 	} else if (isPropertyFunction(property)) {
