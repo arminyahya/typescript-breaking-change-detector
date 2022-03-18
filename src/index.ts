@@ -27,7 +27,7 @@ const parsedCodeB = parse(codeB);
 console.log(util.inspect(parsedCodeB, false, null, true /* enable colors */));
 
 export function checkBodyOfDeclaration(codeA, codeB) {
-  for (let declarationA of codeA.body) {
+  for (const declarationA of codeA.body) {
     switch (declarationA.type) {
       case "ExportNamedDeclaration":
 				throwValidatorError(ExportValidator(declarationA, codeB));

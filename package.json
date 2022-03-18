@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+	"scripts": {
+		"eslint": "eslint --fix src"
+	},
   "devDependencies": {
     "@types/node": "^17.0.21",
-    "@typescript-eslint/typescript-estree": "^5.14.0"
+    "@typescript-eslint/eslint-plugin": "false5.15.0",
+    "@typescript-eslint/parser": "false5.15.0",
+    "@typescript-eslint/typescript-estree": "^5.14.0",
+    "eslint": "false8.11.0"
   },
   "dependencies": {
     "typescript": "false4.6.2",

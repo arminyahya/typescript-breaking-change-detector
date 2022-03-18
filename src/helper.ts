@@ -12,7 +12,7 @@ export function getSameTypeDeclaration(item1, item2) {
 }
 
 export function getPropertyDetailsErrorForInterface(item1, item2) {
-  for (let propertyA of item1.body.body) {
+  for (const propertyA of item1.body.body) {
     const samePropertyInInterfaceB = item2.body.body.find(
       (propertyB) => propertyB.key.name === propertyA.key.name
     );
@@ -43,7 +43,7 @@ export function isPropertyFunction(property) {
   return property.typeAnnotation.typeAnnotation.type === "TSFunctionType";
 }
 export function getPropertyDetailsErrorForTypeAlias(item1, item2) {
-  for (let propertyA of item1.typeAnnotation.members) {
+  for (const propertyA of item1.typeAnnotation.members) {
     const samePropertyInTypeB = item2.typeAnnotation.members.find(
       (propertyB) => propertyB.key.name === propertyA.key.name
     );
