@@ -1,4 +1,5 @@
-import { checkOptionalBeSame, checkReturnTypeBeSame, getPropertyDetailsErrorForTypeAlias, getSameProperty, getSameTypeDeclaration, isPropertyFunction } from '../helper';
+import { ALIASTYPE_REMOVED } from '../constants/errors';
+import {getPropertyDetailsErrorForTypeAlias, getSameTypeDeclaration } from '../helper';
 
 export default function TypeAliasValidator(declarationA, codeB) {
 	const sameMemberInDeclarationB = getSameTypeDeclaration(
@@ -6,7 +7,7 @@ export default function TypeAliasValidator(declarationA, codeB) {
 		codeB
 	);
 	if (!sameMemberInDeclarationB) {
-		return "type removed!";
+		return ALIASTYPE_REMOVED;
 	}
 	const propertyDetailsErrorTypeAlias =
 		getPropertyDetailsErrorForTypeAlias(

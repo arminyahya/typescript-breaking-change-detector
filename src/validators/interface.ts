@@ -1,10 +1,7 @@
+import { INTERFACE_REMOVED } from "../constants/errors";
 import {
-  checkOptionalBeSame,
-  checkReturnTypeBeSame,
   getPropertyDetailsErrorForInterface,
-  getSameProperty,
   getSameTypeDeclaration,
-  isPropertyFunction,
 } from "../helper";
 
 export default function InterfaceValidator(declarationA, codeB) {
@@ -13,7 +10,7 @@ export default function InterfaceValidator(declarationA, codeB) {
     codeB
   );
   if (!sameInterfaceInDeclarationB) {
-    return "interface removed!";
+    return INTERFACE_REMOVED;
   }
   const propertyDetailsError = getPropertyDetailsErrorForInterface(
     declarationA,

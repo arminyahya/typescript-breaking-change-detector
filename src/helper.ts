@@ -1,6 +1,8 @@
+import { OPTIONAL_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "./constants/errors";
+
 export function sameExportInBoth(item1, item2) {
   return item2.body.find(
-    (declarationB) =>
+    (declarationB) => declarationB.type === 'ExportNamedDeclaration' && 
       declarationB.declaration.id.name === item1.declaration.id.name
   );
 }
@@ -17,12 +19,12 @@ export function getPropertyDetailsErrorForInterface(item1, item2) {
       (propertyB) => propertyB.key.name === propertyA.key.name
     );
     if (!samePropertyInInterfaceB) {
-      return "property removed!";
+      return PROPERTY_REMOVED;
     } else if (checkOptionalBeSame(propertyA, samePropertyInInterfaceB)) {
-      return "optional changed!";
+      return OPTIONAL_CHANGED;
     } else if (isPropertyFunction(samePropertyInInterfaceB)) {
       if (checkReturnTypeBeSame(propertyA, samePropertyInInterfaceB)) {
-        return "return type changed";
+        return RETURN_TYPE_CHANGED;
       }
     }
   }
@@ -49,12 +51,12 @@ export function getPropertyDetailsErrorForTypeAlias(item1, item2) {
     );
 
     if (!samePropertyInTypeB) {
-      return "property removed!";
+      return PROPERTY_REMOVED;
     } else if (checkOptionalBeSame(propertyA, samePropertyInTypeB)) {
-      return "optional changed!";
+      return OPTIONAL_CHANGED;
     } else if (isPropertyFunction(samePropertyInTypeB)) {
       if (checkReturnTypeBeSame(propertyA, samePropertyInTypeB)) {
-        return "return type changed";
+        return RETURN_TYPE_CHANGED;
       }
     }
   }
@@ -68,6 +70,6 @@ export function getSameProperty(peroperty, codeB) {
 
 export function throwValidatorError(error) {
   if (error) {
-    throw error;
+    throw new Error(error);
   }
 }

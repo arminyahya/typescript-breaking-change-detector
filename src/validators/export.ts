@@ -1,11 +1,12 @@
-import { checkBodyOfDeclaration } from '..';
-import { checkReturnTypeBeSame, getSameProperty, isPropertyFunction, sameExportInBoth } from '../helper';
+import compareDeclarations from '..';
+import { EXPORT_REMOVED } from '../constants/errors';
+import { sameExportInBoth } from '../helper';
 export default function ExportValidator(exportA, codeB) {
 	const sameExport = sameExportInBoth(exportA, codeB);
-	if (!sameExportInBoth) {
-		return "export removed!";
+	if (!sameExport) {
+		return EXPORT_REMOVED;
 	} else {
-		return checkBodyOfDeclaration(
+		return compareDeclarations(
 			exportA.declaration.body,
 			sameExport.declaration.body
 		);

@@ -4,14 +4,19 @@
   "main": "index.js",
   "license": "MIT",
 	"scripts": {
-		"eslint": "eslint --fix src"
+		"eslint": "eslint --fix src",
+    "test": "jest"
 	},
   "devDependencies": {
     "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "false5.15.0",
     "@typescript-eslint/parser": "false5.15.0",
     "@typescript-eslint/typescript-estree": "^5.14.0",
-    "eslint": "false8.11.0"
+    "eslint": "false8.11.0",
+		"@types/jest": "^27.0.1",
+    "ts-jest": "^27.0.5",
+    "jest": "^27.1.1"
+
   },
   "dependencies": {
     "typescript": "false4.6.2",
