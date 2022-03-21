@@ -11,7 +11,6 @@ export default function compareDeclareFiles({
 	declarationFiles
 }: Config) {
 	const prevDeclareFiles = readdirSync(PREV_DECLARATION_PATH);
-
 	for(const fileName of prevDeclareFiles) {
 		const prevFileString = readFileSync(`${PREV_DECLARATION_PATH }/${fileName}`, "utf8");
     const pevParsedCode = parse(prevFileString);
@@ -23,7 +22,6 @@ export default function compareDeclareFiles({
     const currentParsedCode = parse(currentFileString);
 		compareDeclarations(pevParsedCode, currentParsedCode)
 	}
-
 }
 
 compareDeclareFiles({declarationFiles: ['A.d.ts']});

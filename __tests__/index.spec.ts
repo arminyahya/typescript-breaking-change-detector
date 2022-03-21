@@ -1,6 +1,6 @@
 import { parse } from "@typescript-eslint/typescript-estree";
 import compareDeclarations from '../src';
-import { EXPORT_REMOVED, OPTIONAL_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../src/constants/errors";
+import { EXPORT_REMOVED, FUNCTION_PARAMETER_CHANGED, OPTIONAL_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../src/constants/errors";
 
 describe("Breaking Change Tests", () => {
 	test("Interface Export removed", () => {
@@ -137,5 +137,43 @@ describe("Breaking Change Tests", () => {
     const parsedCodeB = parse(codeB);
 		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
     expect(fn).toThrow(OPTIONAL_CHANGED);
+  });
+
+	test("Interface property parameters changed", () => {
+    const codeA = `
+			export interface A {
+				calcTotal: (a: number, b: number) => number;
+			}
+	`;
+
+    const codeB = `
+		export interface A {
+			calcTotal: (a: number) => number;
+		}
+		`;
+
+    const parsedCodeA = parse(codeA);
+    const parsedCodeB = parse(codeB);
+		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
+    expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
+  });
+
+	test("AliasType property parameters changed", () => {
+    const codeA = `
+			export type A = {
+				calcTotal: (a: number, b: number) => number;
+			}
+	`;
+
+    const codeB = `
+		export type A = {
+			calcTotal: (a: number) => number;
+		}
+		`;
+
+    const parsedCodeA = parse(codeA);
+    const parsedCodeB = parse(codeB);
+		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
+    expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
   });
 });
