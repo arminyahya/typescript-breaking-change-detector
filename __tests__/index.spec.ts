@@ -1,6 +1,6 @@
 import { parse } from "@typescript-eslint/typescript-estree";
 import compareDeclarations from '../src';
-import { EXPORT_REMOVED, FUNCTION_PARAMETER_CHANGED, OPTIONAL_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../src/constants/errors";
+import { EXPORT_REMOVED, FUNCTION_PARAMETER_CHANGED, OPTIONAL_CHANGED, PROPERTY_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../src/constants/errors";
 
 describe("Breaking Change Tests", () => {
 	test("Interface Export removed", () => {
@@ -175,5 +175,42 @@ describe("Breaking Change Tests", () => {
     const parsedCodeB = parse(codeB);
 		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
     expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
+  });
+
+	test("Class Property removed", () => {
+    const codeA = `
+			export class Person {
+				name: string
+			}
+	`;
+
+    const codeB = `
+			export class Person {
+			}
+		`;
+
+    const parsedCodeA = parse(codeA);
+    const parsedCodeB = parse(codeB);
+		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
+    expect(fn).toThrow(PROPERTY_REMOVED);
+  });
+
+	test.only("Class Property changed", () => {
+    const codeA = `
+			export class Person {
+				name: string
+			}
+	`;
+
+    const codeB = `
+			export class Person {
+				name: number
+			}
+		`;
+
+    const parsedCodeA = parse(codeA);
+    const parsedCodeB = parse(codeB);
+		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
+    expect(fn).toThrow(PROPERTY_CHANGED);
   });
 });

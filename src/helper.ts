@@ -99,10 +99,18 @@ export function throwValidatorError(error) {
   }
 }
 
-export function getSameClassDeclaration(item1: ClassDeclaration, item2) {
+export function getSameClassDeclaration(item1: ClassDeclaration, item2): ClassDeclaration {
   return item2.body.find(
     (declarationB) =>
       declarationB.type === "ClassDeclaration" &&
       declarationB.id.name === item1.id.name
   );
+}
+
+export function getSamePropertyForClass(property, classDeclaration: ClassDeclaration) {
+	return classDeclaration.body.body.find(item => item.type === AST_NODE_TYPES.PropertyDefinition && (item as any).key.name === property.key.name)
+}
+
+export function checkPropertyBeSame(property1, property2) {
+	return JSON.stringify(property1) === JSON.stringify(property2);
 }

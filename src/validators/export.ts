@@ -6,8 +6,10 @@ import {
   ExportNamedDeclaration,
   TSTypeAliasDeclaration,
   TSInterfaceDeclaration,
+	ClassDeclaration,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator from "./interface";
+import classValidator, { getClassPropertyDetailError } from "./class";
 
 export default function ExportValidator(
   exportA: ExportNamedDeclaration,
@@ -19,6 +21,7 @@ export default function ExportValidator(
   } else {
     switch (exportA.declaration.type as keyof typeof AST_NODE_TYPES) {
       case AST_NODE_TYPES.ClassDeclaration:
+				return getClassPropertyDetailError(exportA.declaration as ClassDeclaration, sameExport.declaration)
         break;
       case AST_NODE_TYPES.ClassExpression:
         break;
