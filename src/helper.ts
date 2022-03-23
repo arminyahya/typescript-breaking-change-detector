@@ -27,7 +27,6 @@ export function getSameTypeDeclaration(item1, item2) {
 }
 
 export function getPropertyDetailsErrorForInterface(item1, item2) {
-	console.log('getPropertyDetailsErrorForInterface');
   for (const propertyA of item1.body.body) {
     const samePropertyInInterfaceB = item2.body.body.find(
       (propertyB) => propertyB.key.name === propertyA.key.name
@@ -53,6 +52,12 @@ export function checkParamsBeSame(function1, function2) {
   return JSON.stringify(function1Params) === JSON.stringify(function2Params);
 }
 
+export function checkParamsBeSameForTsDeclare(function1, function2) {
+  const function1Params = function1.params;
+  const function2Params = function2.params;
+  return JSON.stringify(function1Params) === JSON.stringify(function2Params);
+}
+
 export function checkOptionalBeSame(item1, item2) {
   return item2.optional !== item1.optional;
 }
@@ -61,6 +66,13 @@ export function checkReturnTypeBeSame(item1, item2) {
   return (
     JSON.stringify(item2.typeAnnotation.typeAnnotation.returnType) ===
     JSON.stringify(item1.typeAnnotation.typeAnnotation.returnType)
+  );
+}
+
+export function checkReturnTypeBeSameForTsDeclareFunction(item1, item2) {
+  return (
+    JSON.stringify(item2.returnType.typeAnnotation.type) ===
+    JSON.stringify(item1.returnType.typeAnnotation.type)
   );
 }
 
@@ -109,6 +121,10 @@ export function getSameClassDeclaration(item1: ClassDeclaration, item2): ClassDe
 
 export function getSamePropertyForClass(property, classDeclaration: ClassDeclaration) {
 	return classDeclaration.body.body.find(item => item.type === AST_NODE_TYPES.PropertyDefinition && (item as any).key.name === property.key.name)
+}
+
+export function getSameMethodForClass(property, classDeclaration: ClassDeclaration) {
+	return classDeclaration.body.body.find(item => item.type === AST_NODE_TYPES.MethodDefinition && (item as any).key.name === property.key.name)
 }
 
 export function checkPropertyBeSame(property1, property2) {

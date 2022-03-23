@@ -7,6 +7,11 @@ export const RETURN_TYPE_CHANGED = 'A Function return type changed!';
 export const CLASS_REMOVED = 'A Class removed!';
 export const FUNCTION_PARAMETER_CHANGED = 'A Function parameter changed!';
 export const PROPERTY_CHANGED = 'A Property changed!';
+export const CLASS_METHOD_REMOVED = 'A Class method removed!';
+export const CLASS_METHOD_CHANGED = 'A Class method changed!';
+export const FUNCTION_REMOVED = 'A Function removed!';
+
+
 
 
 

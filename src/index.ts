@@ -8,6 +8,7 @@ import propertyValidator from "./validators/property";
 import TypeAliasValidator from "./validators/typeAlias";
 import { TSESTreeOptions } from "@typescript-eslint/typescript-estree/dist/parser-options";
 import { ExportNamedDeclaration } from '@typescript-eslint/types/dist/generated/ast-spec'
+import functionValidator from "./validators/function";
 
 export default function compareDeclarations(codeA , codeB	) {
   for (const declarationA of codeA.body) {
@@ -25,6 +26,9 @@ export default function compareDeclarations(codeA , codeB	) {
       case "TSPropertySignature":
 				throwValidatorError(propertyValidator(declarationA, codeB));
         break;
+			case "FunctionDeclaration": 
+				throwValidatorError(functionValidator(declarationA, codeB));
+				break;
       default:
         break;
     }

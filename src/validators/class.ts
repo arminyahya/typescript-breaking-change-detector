@@ -4,6 +4,8 @@ import {
   PropertyDefinition,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import {
+	CLASS_METHOD_CHANGED,
+  CLASS_METHOD_REMOVED,
   CLASS_REMOVED,
   PROPERTY_CHANGED,
   PROPERTY_REMOVED,
@@ -13,6 +15,7 @@ import {
   checkPropertyBeSame,
   checkReturnTypeBeSame,
   getSameClassDeclaration,
+  getSameMethodForClass,
   getSameProperty,
   getSamePropertyForClass,
   isPropertyFunction,
@@ -53,6 +56,19 @@ export function getClassPropertyDetailError(
         break;
       }
       case AST_NODE_TYPES.MethodDefinition:
+        {
+          const sameMehodInOtherClass = getSameMethodForClass(
+            property,
+            classDeclaration2
+          );
+          if (!sameMehodInOtherClass) {
+            return CLASS_METHOD_REMOVED;
+          }
+
+          if (!checkPropertyBeSame(property, sameMehodInOtherClass)) {
+            return CLASS_METHOD_CHANGED;
+          }
+        }
         break;
       case AST_NODE_TYPES.StaticBlock:
         break;
