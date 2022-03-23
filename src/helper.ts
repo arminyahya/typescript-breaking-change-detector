@@ -7,9 +7,6 @@ import {
 } from "./constants/errors";
 import {
   AST_NODE_TYPES,
-  ExportNamedDeclaration,
-  TSTypeAliasDeclaration,
-  TSInterfaceDeclaration,
   ClassDeclaration,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 

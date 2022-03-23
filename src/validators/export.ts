@@ -8,11 +8,13 @@ import {
   TSInterfaceDeclaration,
 	ClassDeclaration,
 	FunctionDeclaration,
+	VariableDeclaration,
 	TSDeclareFunction
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator from "./interface";
 import classValidator, { getClassPropertyDetailError } from "./class";
 import { getFunctionDetailsError } from "./tsDeclareFunction";
+import { getVariableDetailError } from "./variableValidator";
 
 export default function ExportValidator(
   exportA: ExportNamedDeclaration,
@@ -34,6 +36,7 @@ export default function ExportValidator(
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:
+				return getVariableDetailError(exportA.declaration as VariableDeclaration, sameExport.declaration)
         break;
       case AST_NODE_TYPES.TSInterfaceDeclaration:
 				return getPropertyDetailsErrorForInterface(

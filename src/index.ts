@@ -8,6 +8,7 @@ import { TSESTreeOptions } from "@typescript-eslint/typescript-estree/dist/parse
 import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
 import tsDeclareFunctionValidator from "./validators/tsDeclareFunction";
 import moduleValidator from "./validators/module";
+import variableValidator from "./validators/variableValidator";
 
 export default function compareDeclarations(codeA, codeB) {
   for (const declarationA of codeA.body) {
@@ -32,6 +33,9 @@ export default function compareDeclarations(codeA, codeB) {
       case "TSModuleDeclaration":
         throwValidatorError(moduleValidator(declarationA, codeB));
         break;
+			case "VariableDeclaration":
+				throwValidatorError(variableValidator(declarationA, codeB));
+				break;
       default:
         break;
     }
