@@ -1,6 +1,6 @@
 import { parse } from "@typescript-eslint/typescript-estree";
 import compareDeclarations from '../src';
-import { CLASS_METHOD_CHANGED, CLASS_METHOD_REMOVED, ENUM_MEMBER_REMOVED, EXPORT_REMOVED, FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, OPTIONAL_CHANGED, PROPERTY_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../src/constants/errors";
+import { CLASS_METHOD_CHANGED, CLASS_METHOD_REMOVED, ENUM_MEMBER_REMOVED, EXPORT_REMOVED, FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, MODULE_REMOVED, OPTIONAL_CHANGED, PROPERTY_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../src/constants/errors";
 
 describe("Breaking Change Tests", () => {
 	test("Interface Export removed", () => {
@@ -266,6 +266,7 @@ describe("Breaking Change Tests", () => {
 		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
     expect(fn).toThrow(RETURN_TYPE_CHANGED);
   });
+
 	test("Function args changed", () => {
     const codeA = `
 		export function MyMath(a: number, b:number): number;
@@ -280,7 +281,8 @@ describe("Breaking Change Tests", () => {
 		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
     expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
   });
-	test.only("Enum member removed", () => {
+
+	test("Enum member removed", () => {
     const codeA = `
 		export enum MyEnum {
 			a,
@@ -297,5 +299,21 @@ describe("Breaking Change Tests", () => {
     const parsedCodeB = parse(codeB);
 		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
     expect(fn).toThrow(ENUM_MEMBER_REMOVED);
+  });
+	
+	test.only("Module removed", () => {
+    const codeA = `
+		module "myModule" {
+			const content: string;
+			export default content;
+		}
+	`;
+    const codeB = `
+		`;
+
+    const parsedCodeA = parse(codeA);
+    const parsedCodeB = parse(codeB);
+		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
+    expect(fn).toThrow(MODULE_REMOVED);
   });
 });

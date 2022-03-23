@@ -6,5 +6,5 @@
 	[] Add ClassExpression implementation
 	[+] Add TSDeclareFunction implementation
 	[+] Add TSEnumDeclaration implementation
-	[] Add TSModuleDeclaration implementation
+	[+] Add TSModuleDeclaration implementation
 	[] Add VariableDeclaration implementation
