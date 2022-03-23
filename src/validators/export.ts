@@ -1,6 +1,6 @@
 import compareDeclarations from "..";
 import { EXPORT_REMOVED } from "../constants/errors";
-import { getPropertyDetailsErrorForInterface, getPropertyDetailsErrorForTypeAlias, sameExportInBoth, throwValidatorError } from "../helper";
+import { checkAllPrevEnumMembersExist, getPropertyDetailsErrorForInterface, getPropertyDetailsErrorForTypeAlias, sameExportInBoth, throwValidatorError } from "../helper";
 import {
   AST_NODE_TYPES,
   ExportNamedDeclaration,
@@ -12,7 +12,7 @@ import {
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator from "./interface";
 import classValidator, { getClassPropertyDetailError } from "./class";
-import { getFunctionDetailsError } from "./function";
+import { getFunctionDetailsError } from "./tsDeclareFunction";
 
 export default function ExportValidator(
   exportA: ExportNamedDeclaration,
@@ -30,7 +30,7 @@ export default function ExportValidator(
 			case AST_NODE_TYPES.TSDeclareFunction:
 				return getFunctionDetailsError(exportA.declaration as TSDeclareFunction, sameExport.declaration)
       case AST_NODE_TYPES.TSEnumDeclaration:
-        break;
+				return checkAllPrevEnumMembersExist(exportA.declaration, sameExport.declaration)
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:

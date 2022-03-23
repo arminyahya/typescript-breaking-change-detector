@@ -8,11 +8,10 @@ import propertyValidator from "./validators/property";
 import TypeAliasValidator from "./validators/typeAlias";
 import { TSESTreeOptions } from "@typescript-eslint/typescript-estree/dist/parser-options";
 import { ExportNamedDeclaration } from '@typescript-eslint/types/dist/generated/ast-spec'
-import functionValidator from "./validators/function";
+import tsDeclareFunctionValidator from "./validators/tsDeclareFunction";
 
 export default function compareDeclarations(codeA , codeB	) {
   for (const declarationA of codeA.body) {
-		console.log(declarationA.type)
     switch (declarationA.type as keyof typeof AST_NODE_TYPES) {
       case "ExportNamedDeclaration":
 				throwValidatorError(ExportValidator(declarationA as ExportNamedDeclaration, codeB));
@@ -27,7 +26,7 @@ export default function compareDeclarations(codeA , codeB	) {
 				throwValidatorError(propertyValidator(declarationA, codeB));
         break;
 			case "FunctionDeclaration": 
-				throwValidatorError(functionValidator(declarationA, codeB));
+				throwValidatorError(tsDeclareFunctionValidator(declarationA, codeB));
 				break;
       default:
         break;

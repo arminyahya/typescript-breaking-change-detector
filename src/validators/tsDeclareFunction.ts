@@ -1,7 +1,7 @@
 import { FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, RETURN_TYPE_CHANGED } from '../constants/errors';
 import { checkOptionalBeSame, checkParamsBeSame, checkParamsBeSameForTsDeclare, checkReturnTypeBeSame, checkReturnTypeBeSameForTsDeclareFunction, getSameProperty, getSameTypeDeclaration, isPropertyFunction } from '../helper';
 
-export default function functionValidator(func, codeB) {
+export default function tsDeclareFunctionValidator(func, codeB) {
 	const sameFunctionInDeclarationB = getSameTypeDeclaration(
     func,
     codeB

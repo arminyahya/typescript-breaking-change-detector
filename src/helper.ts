@@ -1,4 +1,5 @@
 import {
+	ENUM_MEMBER_REMOVED,
 	FUNCTION_PARAMETER_CHANGED,
   OPTIONAL_CHANGED,
   PROPERTY_REMOVED,
@@ -129,4 +130,16 @@ export function getSameMethodForClass(property, classDeclaration: ClassDeclarati
 
 export function checkPropertyBeSame(property1, property2) {
 	return JSON.stringify(property1) === JSON.stringify(property2);
+}
+
+export function checkAllPrevEnumMembersExist(enum1, enum2) {
+  for (const propertyA of enum1.members) {
+    const sameMemberInEnum2 = enum2.members.find(
+      (propertyB) => propertyB.id.name === propertyA.id.name
+    );
+
+    if (!sameMemberInEnum2) {
+      return ENUM_MEMBER_REMOVED;
+    }
+  }
 }

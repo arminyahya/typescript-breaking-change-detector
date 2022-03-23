@@ -5,6 +5,6 @@
 [] Add Full export implementation
 	[] Add ClassExpression implementation
 	[+] Add TSDeclareFunction implementation
-	[] Add TSEnumDeclaration implementation
+	[+] Add TSEnumDeclaration implementation
 	[] Add TSModuleDeclaration implementation
 	[] Add VariableDeclaration implementation

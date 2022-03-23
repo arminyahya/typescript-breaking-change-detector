@@ -10,6 +10,10 @@ export const PROPERTY_CHANGED = 'A Property changed!';
 export const CLASS_METHOD_REMOVED = 'A Class method removed!';
 export const CLASS_METHOD_CHANGED = 'A Class method changed!';
 export const FUNCTION_REMOVED = 'A Function removed!';
+export const ENUM_REMOVED = 'An Enum removed!';
+export const ENUM_MEMBER_REMOVED = 'An Enum member removed!';
+
+
 
 
 
