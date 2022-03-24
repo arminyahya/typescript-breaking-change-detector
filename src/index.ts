@@ -13,27 +13,27 @@ import variableValidator from "./validators/variableValidator";
 export default function compareDeclarations(codeA, codeB) {
   for (const declarationA of codeA.body) {
     switch (declarationA.type as keyof typeof AST_NODE_TYPES) {
-      case "ExportNamedDeclaration":
+      case AST_NODE_TYPES.ExportNamedDeclaration:
         throwValidatorError(
           ExportValidator(declarationA as ExportNamedDeclaration, codeB)
         );
         break;
-      case "TSInterfaceDeclaration":
+      case AST_NODE_TYPES.TSInterfaceDeclaration:
         throwValidatorError(InterfaceValidator(declarationA, codeB));
         break;
-      case "TSTypeAliasDeclaration":
+      case AST_NODE_TYPES.TSTypeAliasDeclaration:
         throwValidatorError(TypeAliasValidator(declarationA, codeB));
         break;
-      case "TSPropertySignature":
+      case AST_NODE_TYPES.TSPropertySignature:
         throwValidatorError(propertyValidator(declarationA, codeB));
         break;
-      case "FunctionDeclaration":
+      case AST_NODE_TYPES.FunctionDeclaration:
         throwValidatorError(tsDeclareFunctionValidator(declarationA, codeB));
         break;
-      case "TSModuleDeclaration":
+      case AST_NODE_TYPES.TSModuleDeclaration:
         throwValidatorError(moduleValidator(declarationA, codeB));
         break;
-			case "VariableDeclaration":
+			case AST_NODE_TYPES.VariableDeclaration:
 				throwValidatorError(variableValidator(declarationA, codeB));
 				break;
       default:
