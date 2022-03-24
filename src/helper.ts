@@ -24,26 +24,6 @@ export function getSameTypeDeclaration(item1, item2) {
   );
 }
 
-export function getPropertyDetailsErrorForInterface(item1, item2) {
-  for (const propertyA of item1.body.body) {
-    const samePropertyInInterfaceB = item2.body.body.find(
-      (propertyB) => propertyB.key.name === propertyA.key.name
-    );
-    if (!samePropertyInInterfaceB) {
-      return PROPERTY_REMOVED;
-    } else if (checkOptionalBeSame(propertyA, samePropertyInInterfaceB)) {
-      return OPTIONAL_CHANGED;
-    } else if (isPropertyFunction(samePropertyInInterfaceB)) {
-      if (!checkReturnTypeBeSame(propertyA, samePropertyInInterfaceB)) {
-        return RETURN_TYPE_CHANGED;
-
-      } else if (!checkParamsBeSame(propertyA, samePropertyInInterfaceB)) {
-        return FUNCTION_PARAMETER_CHANGED;
-      }
-    }
-  }
-}
-
 export function checkParamsBeSame(function1, function2) {
   const function1Params = function1.typeAnnotation.typeAnnotation.params;
   const function2Params = function2.typeAnnotation.typeAnnotation.params;
@@ -76,25 +56,6 @@ export function checkReturnTypeBeSameForTsDeclareFunction(item1, item2) {
 
 export function isPropertyFunction(property) {
   return property.typeAnnotation.typeAnnotation.type === "TSFunctionType";
-}
-export function getPropertyDetailsErrorForTypeAlias(item1, item2) {
-  for (const propertyA of item1.typeAnnotation.members) {
-    const samePropertyInTypeB = item2.typeAnnotation.members.find(
-      (propertyB) => propertyB.key.name === propertyA.key.name
-    );
-
-    if (!samePropertyInTypeB) {
-      return PROPERTY_REMOVED;
-    } else if (checkOptionalBeSame(propertyA, samePropertyInTypeB)) {
-      return OPTIONAL_CHANGED;
-    } else if (isPropertyFunction(samePropertyInTypeB)) {
-      if (!checkReturnTypeBeSame(propertyA, samePropertyInTypeB)) {
-        return RETURN_TYPE_CHANGED;
-      } else if (!checkParamsBeSame(propertyA, samePropertyInTypeB)) {
-        return FUNCTION_PARAMETER_CHANGED;
-      }
-    }
-  }
 }
 
 export function getSameProperty(peroperty, codeB) {
@@ -129,14 +90,6 @@ export function checkPropertyBeSame(property1, property2) {
 	return JSON.stringify(property1) === JSON.stringify(property2);
 }
 
-export function checkAllPrevEnumMembersExist(enum1, enum2) {
-  for (const propertyA of enum1.members) {
-    const sameMemberInEnum2 = enum2.members.find(
-      (propertyB) => propertyB.id.name === propertyA.id.name
-    );
-
-    if (!sameMemberInEnum2) {
-      return ENUM_MEMBER_REMOVED;
-    }
-  }
+export function getErrorInfo(type, info) {
+	return `${type} - ${info}`;
 }

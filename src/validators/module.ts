@@ -1,5 +1,5 @@
 import { MODULE_REMOVED } from '../constants/errors';
-import { checkOptionalBeSame, checkReturnTypeBeSame, getSameProperty, getSameTypeDeclaration, isPropertyFunction } from '../helper';
+import { checkOptionalBeSame, checkReturnTypeBeSame, getErrorInfo, getSameProperty, getSameTypeDeclaration, isPropertyFunction } from '../helper';
 
 export default function moduleValidator(module1, codeB) {
 	const sameInterfaceInDeclarationB = getSameTypeDeclaration(
@@ -7,6 +7,6 @@ export default function moduleValidator(module1, codeB) {
     codeB
   );
   if (!sameInterfaceInDeclarationB) {
-    return MODULE_REMOVED;
+    return getErrorInfo(MODULE_REMOVED, `module ${module1.id.name}`);
   }
 }

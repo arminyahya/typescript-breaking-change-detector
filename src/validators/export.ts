@@ -1,6 +1,6 @@
-import compareDeclarations from "..";
+import hasDeclarationBreakingChange from "..";
 import { EXPORT_REMOVED } from "../constants/errors";
-import { checkAllPrevEnumMembersExist, getPropertyDetailsErrorForInterface, getPropertyDetailsErrorForTypeAlias, sameExportInBoth, throwValidatorError } from "../helper";
+import {  getErrorInfo, sameExportInBoth, throwValidatorError } from "../helper";
 import {
   AST_NODE_TYPES,
   ExportNamedDeclaration,
@@ -11,10 +11,12 @@ import {
 	VariableDeclaration,
 	TSDeclareFunction
 } from "@typescript-eslint/types/dist/generated/ast-spec";
-import InterfaceValidator from "./interface";
+import InterfaceValidator, { getPropertyDetailsErrorForInterface } from "./interface";
 import classValidator, { getClassPropertyDetailError } from "./class";
 import { getFunctionDetailsError } from "./tsDeclareFunction";
 import { getVariableDetailError } from "./variableValidator";
+import { checkAllPrevEnumMembersExist } from "./enum";
+import { getPropertyDetailsErrorForTypeAlias } from "./typeAlias";
 
 export default function ExportValidator(
   exportA: ExportNamedDeclaration,
@@ -22,7 +24,7 @@ export default function ExportValidator(
 ) {
   const sameExport = sameExportInBoth(exportA, codeB);
   if (!sameExport) {
-    return EXPORT_REMOVED;
+    return getErrorInfo(EXPORT_REMOVED, (exportA.declaration as any).id.name);
   } else {
     switch (exportA.declaration.type as keyof typeof AST_NODE_TYPES) {
       case AST_NODE_TYPES.ClassDeclaration:

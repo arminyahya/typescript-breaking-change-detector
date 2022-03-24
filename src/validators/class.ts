@@ -14,6 +14,7 @@ import {
   checkOptionalBeSame,
   checkPropertyBeSame,
   checkReturnTypeBeSame,
+  getErrorInfo,
   getSameClassDeclaration,
   getSameMethodForClass,
   getSameProperty,
@@ -30,7 +31,7 @@ export default function classValidator(
     codeB
   );
   if (!sameClassInDeclarationB) {
-    return CLASS_REMOVED;
+    return getErrorInfo(CLASS_REMOVED, classDeclaration.id.name);
   }
   return getClassPropertyDetailError(classDeclaration, sameClassInDeclarationB);
 }
@@ -47,11 +48,11 @@ export function getClassPropertyDetailError(
           classDeclaration2
         );
         if (!samePropertyInOtherClass) {
-          return PROPERTY_REMOVED;
+          return getErrorInfo(PROPERTY_REMOVED, `property ${property.id.name} in class ${classDeclaration1.id.name}`);
         }
 
         if (!checkPropertyBeSame(property, samePropertyInOtherClass)) {
-          return PROPERTY_CHANGED;
+          return getErrorInfo(PROPERTY_CHANGED, `property ${property.id.name} in class ${classDeclaration1.id.name}`);
         }
         break;
       }
@@ -62,11 +63,11 @@ export function getClassPropertyDetailError(
             classDeclaration2
           );
           if (!sameMehodInOtherClass) {
-            return CLASS_METHOD_REMOVED;
+            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${property.key.name} in class ${classDeclaration1.id.name}`);
           }
 
           if (!checkPropertyBeSame(property, sameMehodInOtherClass)) {
-            return CLASS_METHOD_CHANGED;
+            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${property.key.name} in class ${classDeclaration1.id.name}`);
           }
         }
         break;

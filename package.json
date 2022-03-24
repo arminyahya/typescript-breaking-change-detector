@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@types/fs-extra": "false9.0.13",
+    "chalk": "4.0.0",
     "fs-extra": "false10.0.1",
     "typescript": "false4.6.2",
     "utill": "false0.1.3"

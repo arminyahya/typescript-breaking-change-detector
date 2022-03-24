@@ -1,2 +1,6 @@
 node_modules
 yarn.lock
+breaking-change-detector
+bcdconfig.json
+A.d.ts
+B.d.ts

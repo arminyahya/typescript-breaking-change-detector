@@ -1,27 +1,31 @@
 import {readdirSync, readFileSync} from 'fs-extra'
 import { PREV_DECLARATION_PATH } from '../declare-snapshot-maker';
 import { parse } from "@typescript-eslint/typescript-estree";
-import compareDeclarations from '..';
+import path from 'path';
+import isNewDeclarationValid from '..';
 
 interface Config {
+	projectRoot: string;
   declarationFiles: string[];
 }
 
-export default function compareDeclareFiles({
+export default function areDeclareFilesValid({
+	projectRoot,
 	declarationFiles
 }: Config) {
-	const prevDeclareFiles = readdirSync(PREV_DECLARATION_PATH);
+	const prevDeclareFiles = readdirSync(path.join(projectRoot,PREV_DECLARATION_PATH));
 	for(const fileName of prevDeclareFiles) {
-		const prevFileString = readFileSync(`${PREV_DECLARATION_PATH }/${fileName}`, "utf8");
+		const prevFileString = readFileSync(path.join(projectRoot, `${PREV_DECLARATION_PATH }/${fileName}`), "utf8");
     const pevParsedCode = parse(prevFileString);
 		const currentFile =  declarationFiles.find(f => f === fileName);
 		if(!currentFile) {
 			throw new Error("file removed!: " + fileName);
 		}
-		const currentFileString = readFileSync(`./${fileName}`, "utf8");
+		const currentFileString = readFileSync(path.join(projectRoot,`./${fileName}`), "utf8");
     const currentParsedCode = parse(currentFileString);
-		compareDeclarations(pevParsedCode, currentParsedCode)
+		if(!isNewDeclarationValid(pevParsedCode, currentParsedCode)) {
+			return false;
+		}
 	}
+return true;
 }
-
-compareDeclareFiles({declarationFiles: ['A.d.ts']});

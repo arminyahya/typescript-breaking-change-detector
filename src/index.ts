@@ -9,35 +9,43 @@ import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/
 import tsDeclareFunctionValidator from "./validators/tsDeclareFunction";
 import moduleValidator from "./validators/module";
 import variableValidator from "./validators/variableValidator";
+import chalk from "chalk";
 
-export default function compareDeclarations(codeA, codeB) {
-  for (const declarationA of codeA.body) {
-    switch (declarationA.type as keyof typeof AST_NODE_TYPES) {
-      case AST_NODE_TYPES.ExportNamedDeclaration:
-        throwValidatorError(
-          ExportValidator(declarationA as ExportNamedDeclaration, codeB)
-        );
-        break;
-      case AST_NODE_TYPES.TSInterfaceDeclaration:
-        throwValidatorError(InterfaceValidator(declarationA, codeB));
-        break;
-      case AST_NODE_TYPES.TSTypeAliasDeclaration:
-        throwValidatorError(TypeAliasValidator(declarationA, codeB));
-        break;
-      case AST_NODE_TYPES.TSPropertySignature:
-        throwValidatorError(propertyValidator(declarationA, codeB));
-        break;
-      case AST_NODE_TYPES.FunctionDeclaration:
-        throwValidatorError(tsDeclareFunctionValidator(declarationA, codeB));
-        break;
-      case AST_NODE_TYPES.TSModuleDeclaration:
-        throwValidatorError(moduleValidator(declarationA, codeB));
-        break;
-			case AST_NODE_TYPES.VariableDeclaration:
-				throwValidatorError(variableValidator(declarationA, codeB));
-				break;
-      default:
-        break;
+export default function isNewDeclarationValid(codeA, codeB) {
+  try {
+    for (const declarationA of codeA.body) {
+      switch (declarationA.type as keyof typeof AST_NODE_TYPES) {
+        case AST_NODE_TYPES.ExportNamedDeclaration:
+          throwValidatorError(
+            ExportValidator(declarationA as ExportNamedDeclaration, codeB)
+          );
+          break;
+        case AST_NODE_TYPES.TSInterfaceDeclaration:
+          throwValidatorError(InterfaceValidator(declarationA, codeB));
+          break;
+        case AST_NODE_TYPES.TSTypeAliasDeclaration:
+          throwValidatorError(TypeAliasValidator(declarationA, codeB));
+          break;
+        case AST_NODE_TYPES.TSPropertySignature:
+          throwValidatorError(propertyValidator(declarationA, codeB));
+          break;
+        case AST_NODE_TYPES.FunctionDeclaration:
+          throwValidatorError(tsDeclareFunctionValidator(declarationA, codeB));
+          break;
+        case AST_NODE_TYPES.TSModuleDeclaration:
+          throwValidatorError(moduleValidator(declarationA, codeB));
+          break;
+        case AST_NODE_TYPES.VariableDeclaration:
+          throwValidatorError(variableValidator(declarationA, codeB));
+          break;
+        default:
+          break;
+      }
     }
-  }
+		return true;
+  } catch (e) {
+		console.log(chalk.red(e));
+		return false;
+		
+	}
 }
