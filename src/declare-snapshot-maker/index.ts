@@ -1,9 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync } from "fs-extra";
 import path from "path";
+import { OPERATION_PATH, PREV_DECLARATION_PATH } from "../constants/filenames";
 import { getFullFileName } from "./helper";
-
-export const OPERATION_PATH = "./breaking-change-detector";
-export const PREV_DECLARATION_PATH = `${OPERATION_PATH}/prev-declarations`;
 const requiredFolders = [OPERATION_PATH, PREV_DECLARATION_PATH];
 
 interface Config {

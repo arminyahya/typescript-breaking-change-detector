@@ -1,7 +1,8 @@
 import { existsSync } from "fs-extra";
 import path from "path";
 import areDeclareFilesValid from "../compare-declare-files";
-import declarationSnapShotMaker, { PREV_DECLARATION_PATH } from "../declare-snapshot-maker";
+import { CONFIG_FILENAME, PREV_DECLARATION_PATH } from "../constants/filenames";
+import declarationSnapShotMaker from "../declare-snapshot-maker";
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 interface ApiConfig {
@@ -11,7 +12,7 @@ export default function api(config: ApiConfig) {
   const { projectRoot } = config;
   const { declarationFiles } = require(path.join(
     projectRoot,
-    "./bcdconfig.json"
+    CONFIG_FILENAME
   ));
 
 	// its first time running detector

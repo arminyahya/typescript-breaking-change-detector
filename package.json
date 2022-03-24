@@ -1,5 +1,5 @@
 {
-  "name": "breaking-change-detector",
+  "name": "definitionguard",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",

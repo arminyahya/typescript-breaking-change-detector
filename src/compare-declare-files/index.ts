@@ -1,8 +1,8 @@
 import {readdirSync, readFileSync} from 'fs-extra'
-import { PREV_DECLARATION_PATH } from '../declare-snapshot-maker';
 import { parse } from "@typescript-eslint/typescript-estree";
 import path from 'path';
 import isNewDeclarationValid from '..';
+import { PREV_DECLARATION_PATH } from '../constants/filenames';
 
 interface Config {
 	projectRoot: string;

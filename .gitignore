@@ -1,6 +1,7 @@
 node_modules
 yarn.lock
-breaking-change-detector
+.definitionguard
 bcdconfig.json
 A.d.ts
 B.d.ts
+definitionguard.json
