@@ -1,11 +1,4 @@
 import {
-	ENUM_MEMBER_REMOVED,
-	FUNCTION_PARAMETER_CHANGED,
-  OPTIONAL_CHANGED,
-  PROPERTY_REMOVED,
-  RETURN_TYPE_CHANGED,
-} from "./constants/errors";
-import {
   AST_NODE_TYPES,
   ClassDeclaration,
 } from "@typescript-eslint/types/dist/generated/ast-spec";

@@ -1,5 +1,5 @@
 import { ENUM_MEMBER_REMOVED, ENUM_REMOVED } from '../constants/errors';
-import {  checkOptionalBeSame, checkReturnTypeBeSame, getErrorInfo, getSameProperty, getSameTypeDeclaration, isPropertyFunction } from '../helper';
+import { getErrorInfo, getSameTypeDeclaration } from '../helper';
 
 export default function EnumValidator(enum1, codeB) {
 	const sameEnumInDeclarationB = getSameTypeDeclaration(

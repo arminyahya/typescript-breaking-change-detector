@@ -1,7 +1,6 @@
 import {
   AST_NODE_TYPES,
   ClassDeclaration,
-  PropertyDefinition,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import {
 	CLASS_METHOD_CHANGED,
@@ -11,15 +10,11 @@ import {
   PROPERTY_REMOVED,
 } from "../constants/errors";
 import {
-  checkOptionalBeSame,
   checkPropertyBeSame,
-  checkReturnTypeBeSame,
   getErrorInfo,
   getSameClassDeclaration,
   getSameMethodForClass,
-  getSameProperty,
   getSamePropertyForClass,
-  isPropertyFunction,
 } from "../helper";
 
 export default function classValidator(

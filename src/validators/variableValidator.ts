@@ -1,5 +1,4 @@
-import { PROPERTY_CHANGED, PROPERTY_REMOVED, VARIABLE_REMOVED } from '../constants/errors';
-import { checkOptionalBeSame, checkReturnTypeBeSame, getSameProperty, getSameTypeDeclaration, isPropertyFunction } from '../helper';
+import { PROPERTY_CHANGED, PROPERTY_REMOVED } from '../constants/errors';
 import { Identifier, VariableDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
 
 export default function variableValidator(var1, codeB) {
