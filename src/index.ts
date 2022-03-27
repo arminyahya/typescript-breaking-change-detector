@@ -1,10 +1,9 @@
-import { AST, AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
+import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { throwValidatorError } from "./helper";
 import ExportValidator from "./validators/export";
 import InterfaceValidator from "./validators/interface";
 import propertyValidator from "./validators/property";
 import TypeAliasValidator from "./validators/typeAlias";
-import { TSESTreeOptions } from "@typescript-eslint/typescript-estree/dist/parser-options";
 import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
 import tsDeclareFunctionValidator from "./validators/tsDeclareFunction";
 import moduleValidator from "./validators/module";
