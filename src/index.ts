@@ -43,6 +43,7 @@ export default function isNewDeclarationValid(codeA, codeB) {
     }
 		return true;
   } catch (e) {
+		// eslint-disable-next-line no-console
 		console.log(chalk.red(e));
 		return false;
 		

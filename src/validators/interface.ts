@@ -6,6 +6,7 @@ import {
 	getErrorInfo,
   getSameTypeDeclaration,
 	isPropertyFunction,
+	objectToFormatedString,
 } from "../helper";
 
 export default function InterfaceValidator(declarationA, codeB) {
@@ -29,14 +30,14 @@ export function getPropertyDetailsErrorForInterface(item1, item2) {
       (propertyB) => propertyB.key.name === propertyA.key.name
     );
     if (!samePropertyInInterfaceB) {
-      return getErrorInfo(PROPERTY_REMOVED, `property ${propertyA.key.name} in interface ${item1.id.name}`);
+      return getErrorInfo(PROPERTY_REMOVED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
     } else if (checkOptionalBeSame(propertyA, samePropertyInInterfaceB)) {
-      return getErrorInfo(OPTIONAL_CHANGED, `property ${propertyA.key.name} in interface ${item1.id.name}`);
+      return getErrorInfo(OPTIONAL_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
     } else if (isPropertyFunction(samePropertyInInterfaceB)) {
       if (!checkReturnTypeBeSame(propertyA, samePropertyInInterfaceB)) {
-        return getErrorInfo(RETURN_TYPE_CHANGED, `property ${propertyA.key.name} in interface ${item1.id.name}`);
+        return getErrorInfo(RETURN_TYPE_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
       } else if (!checkParamsBeSame(propertyA, samePropertyInInterfaceB)) {
-        return getErrorInfo(FUNCTION_PARAMETER_CHANGED, `property ${propertyA.key.name} in interface ${item1.id.name}`);
+        return getErrorInfo(FUNCTION_PARAMETER_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
       }
     }
   }

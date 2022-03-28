@@ -1,14 +1,60 @@
 import {
   AST_NODE_TYPES,
   ClassDeclaration,
+  ClassExpression,
+  ExportDeclaration,
+  FunctionDeclaration,
+  MethodDefinition,
+  PropertyDefinition,
+  PropertyDefinitionNonComputedName,
+  StaticBlock,
+  TSAbstractMethodDefinition,
+  TSAbstractPropertyDefinition,
+  TSDeclareFunction,
+  TSEnumDeclaration,
+  TSIndexSignature,
+  TSInterfaceDeclaration,
+  TSModuleDeclaration,
+  TSTypeAliasDeclaration,
+  VariableDeclaration,
+	MethodDefinitionNonComputedName
 } from "@typescript-eslint/types/dist/generated/ast-spec";
+import { AST } from "@typescript-eslint/typescript-estree";
+import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
 
-export function sameExportInBoth(item1 /*: ExportNamedDeclaration*/, item2) {
-  return item2.body.find(
-    (declarationB) =>
-      declarationB.type === "ExportNamedDeclaration" &&
-      declarationB.declaration.id.name === item1.declaration.id.name
-  );
+export type ExportDeclarationWithIdentifier =
+  | ClassDeclaration
+  | ClassExpression
+  | FunctionDeclaration
+  | TSDeclareFunction
+  | TSEnumDeclaration
+  | TSInterfaceDeclaration
+  | TSTypeAliasDeclaration;
+
+export type ClassElementExceptComputedPropertyDefinition = MethodDefinitionNonComputedName | PropertyDefinitionNonComputedName | StaticBlock | TSAbstractMethodDefinition | TSAbstractPropertyDefinition | TSIndexSignature;
+export function sameExportInBoth(
+  item1: ExportNamedDeclaration,
+  item2: AST<any>
+){
+  return item2.body.find((declarationB) => {
+    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration) {
+      if (
+        declarationB.declaration.type === AST_NODE_TYPES.VariableDeclaration
+      ) {
+        // variable declaration implementation is not yet complete
+      } else if (
+        declarationB.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
+      ) {
+        // module declaration implementation is not yet complete
+      } else {
+        return (
+          (
+            declarationB.declaration as unknown as ExportDeclarationWithIdentifier
+          ).id.name === (item1.declaration as ExportDeclarationWithIdentifier).id.name
+        );
+      }
+    }
+  });
 }
 
 export function getSameTypeDeclaration(item1, item2) {
@@ -63,7 +109,10 @@ export function throwValidatorError(error) {
   }
 }
 
-export function getSameClassDeclaration(item1: ClassDeclaration, item2): ClassDeclaration {
+export function getSameClassDeclaration(
+  item1: ClassDeclaration,
+  item2
+): ClassDeclaration {
   return item2.body.find(
     (declarationB) =>
       declarationB.type === "ClassDeclaration" &&
@@ -71,18 +120,36 @@ export function getSameClassDeclaration(item1: ClassDeclaration, item2): ClassDe
   );
 }
 
-export function getSamePropertyForClass(property, classDeclaration: ClassDeclaration) {
-	return classDeclaration.body.body.find(item => item.type === AST_NODE_TYPES.PropertyDefinition && (item as any).key.name === property.key.name)
+export function getSamePropertyForClass(
+  property,
+  classDeclaration: ClassDeclaration
+) {
+  return classDeclaration.body.body.find(
+    (item) =>
+      item.type === AST_NODE_TYPES.PropertyDefinition &&
+      (item as any).key.name === property.key.name
+  );
 }
 
-export function getSameMethodForClass(property, classDeclaration: ClassDeclaration) {
-	return classDeclaration.body.body.find(item => item.type === AST_NODE_TYPES.MethodDefinition && (item as any).key.name === property.key.name)
+export function getSameMethodForClass(
+  property,
+  classDeclaration: ClassDeclaration
+) {
+  return classDeclaration.body.body.find(
+    (item) =>
+      item.type === AST_NODE_TYPES.MethodDefinition &&
+      (item as any).key.name === property.key.name
+  );
 }
 
 export function checkPropertyBeSame(property1, property2) {
-	return JSON.stringify(property1) === JSON.stringify(property2);
+  return JSON.stringify(property1) === JSON.stringify(property2);
 }
 
 export function getErrorInfo(type, info) {
-	return `${type} - ${info}`;
+  return `${type} - ${info}`;
+}
+
+export function objectToFormatedString(object) {
+	return JSON.stringify(object, null, 2);
 }

@@ -11,6 +11,7 @@ import {
 } from "../constants/errors";
 import {
   checkPropertyBeSame,
+  ClassElementExceptComputedPropertyDefinition,
   getErrorInfo,
   getSameClassDeclaration,
   getSameMethodForClass,
@@ -32,8 +33,8 @@ export default function classValidator(
 }
 
 export function getClassPropertyDetailError(
-  classDeclaration1,
-  classDeclaration2
+  classDeclaration1: ClassDeclaration,
+  classDeclaration2: ClassDeclaration
 ) {
   for (const property of classDeclaration1.body.body) {
     switch (property.type) {
@@ -43,11 +44,11 @@ export function getClassPropertyDetailError(
           classDeclaration2
         );
         if (!samePropertyInOtherClass) {
-          return getErrorInfo(PROPERTY_REMOVED, `property ${property.id.name} in class ${classDeclaration1.id.name}`);
+          return getErrorInfo(PROPERTY_REMOVED, `property ${property} in class ${classDeclaration1.id.name}`);
         }
 
         if (!checkPropertyBeSame(property, samePropertyInOtherClass)) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${property.id.name} in class ${classDeclaration1.id.name}`);
+          return getErrorInfo(PROPERTY_CHANGED, `property ${property} in class ${classDeclaration1.id.name}`);
         }
         break;
       }
@@ -58,11 +59,11 @@ export function getClassPropertyDetailError(
             classDeclaration2
           );
           if (!sameMehodInOtherClass) {
-            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${property.key.name} in class ${classDeclaration1.id.name}`);
+            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${property} in class ${classDeclaration1.id.name}`);
           }
 
           if (!checkPropertyBeSame(property, sameMehodInOtherClass)) {
-            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${property.key.name} in class ${classDeclaration1.id.name}`);
+            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${property} in class ${classDeclaration1.id.name}`);
           }
         }
         break;

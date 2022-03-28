@@ -1,5 +1,5 @@
 import { ALIASTYPE_REMOVED, FUNCTION_PARAMETER_CHANGED, OPTIONAL_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from '../constants/errors';
-import {checkOptionalBeSame, checkParamsBeSame, checkReturnTypeBeSame, getErrorInfo, getSameTypeDeclaration, isPropertyFunction } from '../helper';
+import {checkOptionalBeSame, checkParamsBeSame, checkReturnTypeBeSame, getErrorInfo, getSameTypeDeclaration, isPropertyFunction, objectToFormatedString } from '../helper';
 
 export default function TypeAliasValidator(declarationA, codeB) {
 	const sameMemberInDeclarationB = getSameTypeDeclaration(
@@ -26,14 +26,14 @@ export function getPropertyDetailsErrorForTypeAlias(item1, item2) {
     );
 
     if (!samePropertyInTypeB) {
-      return getErrorInfo(PROPERTY_REMOVED, `property ${propertyA.key.name} in type ${item1.id.name}`);
+      return getErrorInfo(PROPERTY_REMOVED, `property ${objectToFormatedString(propertyA)} in type ${item1.id.name}`);
     } else if (checkOptionalBeSame(propertyA, samePropertyInTypeB)) {
-      return getErrorInfo(OPTIONAL_CHANGED, `property ${propertyA.key.name} in type ${item1.id.name}`);
+      return getErrorInfo(OPTIONAL_CHANGED, `property ${objectToFormatedString(propertyA)} in type ${item1.id.name}`);
     } else if (isPropertyFunction(samePropertyInTypeB)) {
       if (!checkReturnTypeBeSame(propertyA, samePropertyInTypeB)) {
-        return getErrorInfo(RETURN_TYPE_CHANGED, `property ${propertyA.key.name} in type ${item1.id.name}`);
+        return getErrorInfo(RETURN_TYPE_CHANGED, `property ${objectToFormatedString(propertyA)} in type ${item1.id.name}`);
       } else if (!checkParamsBeSame(propertyA, samePropertyInTypeB)) {
-        return getErrorInfo(FUNCTION_PARAMETER_CHANGED, `property ${propertyA.key.name} in type ${item1.id.name}`);
+        return getErrorInfo(FUNCTION_PARAMETER_CHANGED, `property ${objectToFormatedString(propertyA)} in type ${item1.id.name}`);
       }
     }
   }
