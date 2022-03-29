@@ -7,7 +7,6 @@ import {
   CLASS_METHOD_REMOVED,
   CLASS_REMOVED,
   PROPERTY_CHANGED,
-  PROPERTY_REMOVED,
 } from "../constants/errors";
 import {
   checkPropertyBeSame,
@@ -44,7 +43,7 @@ export function getClassPropertyDetailError(
           classDeclaration2
         );
         if (!samePropertyInOtherClass) {
-          return getErrorInfo(PROPERTY_REMOVED, `property ${property} in class ${classDeclaration1.id.name}`);
+          return getErrorInfo(PROPERTY_CHANGED, `property ${property} in class ${classDeclaration1.id.name}`);
         }
 
         if (!checkPropertyBeSame(property, samePropertyInOtherClass)) {

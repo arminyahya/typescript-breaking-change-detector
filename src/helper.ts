@@ -59,7 +59,7 @@ export function sameExportInBoth(
 
 export function getSameTypeDeclaration(item1, item2) {
   return item2.body.find(
-    (declarationB) => declarationB.id.name === item1.id.name
+    (declarationB) => JSON.stringify(declarationB.id) === JSON.stringify(item1.id)
   );
 }
 

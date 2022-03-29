@@ -1,4 +1,4 @@
-import { FUNCTION_PARAMETER_CHANGED, INTERFACE_REMOVED, OPTIONAL_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED } from "../constants/errors";
+import { FUNCTION_PARAMETER_CHANGED, INTERFACE_REMOVED, OPTIONAL_CHANGED, PROPERTY_CHANGED, RETURN_TYPE_CHANGED } from "../constants/errors";
 import {
 	checkOptionalBeSame,
 	checkParamsBeSame,
@@ -9,36 +9,28 @@ import {
 	objectToFormatedString,
 } from "../helper";
 
-export default function InterfaceValidator(declarationA, codeB) {
+import {TSInterfaceDeclaration, TSCallSignatureDeclaration, TSPropertySignature, TSConstructSignatureDeclaration, TSMethodSignature} from "@typescript-eslint/types/dist/generated/ast-spec";
+
+export default function InterfaceValidator(interface1: TSInterfaceDeclaration, codeB) {
   const sameInterfaceInDeclarationB = getSameTypeDeclaration(
-    declarationA,
+    interface1,
     codeB
   );
   if (!sameInterfaceInDeclarationB) {
-    return getErrorInfo(INTERFACE_REMOVED, declarationA.id.name);
+    return getErrorInfo(INTERFACE_REMOVED, interface1.id.name);
   }
   const propertyDetailsError = getPropertyDetailsErrorForInterface(
-    declarationA,
+    interface1,
     sameInterfaceInDeclarationB
   );
   return propertyDetailsError;
 }
 
-export function getPropertyDetailsErrorForInterface(item1, item2) {
+export function getPropertyDetailsErrorForInterface(item1: TSInterfaceDeclaration, item2: TSInterfaceDeclaration) {
   for (const propertyA of item1.body.body) {
-    const samePropertyInInterfaceB = item2.body.body.find(
-      (propertyB) => propertyB.key.name === propertyA.key.name
-    );
+    const samePropertyInInterfaceB = item2.body.body.find((propertyB) => JSON.stringify(propertyB) === JSON.stringify(propertyA));
     if (!samePropertyInInterfaceB) {
-      return getErrorInfo(PROPERTY_REMOVED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
-    } else if (checkOptionalBeSame(propertyA, samePropertyInInterfaceB)) {
-      return getErrorInfo(OPTIONAL_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
-    } else if (isPropertyFunction(samePropertyInInterfaceB)) {
-      if (!checkReturnTypeBeSame(propertyA, samePropertyInInterfaceB)) {
-        return getErrorInfo(RETURN_TYPE_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
-      } else if (!checkParamsBeSame(propertyA, samePropertyInInterfaceB)) {
-        return getErrorInfo(FUNCTION_PARAMETER_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
-      }
+      return getErrorInfo(PROPERTY_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
     }
   }
 }

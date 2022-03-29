@@ -9,7 +9,8 @@ import {
 	ClassDeclaration,
 	FunctionDeclaration,
 	VariableDeclaration,
-	TSDeclareFunction
+	TSDeclareFunction,
+	TSEnumDeclaration
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator, { getPropertyDetailsErrorForInterface } from "./interface";
 import classValidator, { getClassPropertyDetailError } from "./class";
@@ -35,7 +36,7 @@ export default function ExportValidator(
 			case AST_NODE_TYPES.TSDeclareFunction:
 				return getFunctionDetailsError(exportA.declaration as TSDeclareFunction, (sameExport as ExportNamedDeclaration).declaration)
       case AST_NODE_TYPES.TSEnumDeclaration:
-				return checkAllPrevEnumMembersExist(exportA.declaration, (sameExport as ExportNamedDeclaration).declaration)
+				return checkAllPrevEnumMembersExist(exportA.declaration as TSEnumDeclaration, (sameExport as ExportNamedDeclaration).declaration as TSEnumDeclaration)
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:
@@ -43,14 +44,14 @@ export default function ExportValidator(
 			break;
       case AST_NODE_TYPES.TSInterfaceDeclaration:
 				return getPropertyDetailsErrorForInterface(
-					exportA.declaration,
-					(sameExport as ExportNamedDeclaration).declaration
+					exportA.declaration as TSInterfaceDeclaration ,
+					(sameExport as ExportNamedDeclaration).declaration as TSInterfaceDeclaration
 				);
         break;
       case AST_NODE_TYPES.TSTypeAliasDeclaration:
 				return getPropertyDetailsErrorForTypeAlias(
-					exportA.declaration,
-					(sameExport as ExportNamedDeclaration).declaration
+					exportA.declaration as TSTypeAliasDeclaration ,
+					(sameExport as ExportNamedDeclaration).declaration as TSTypeAliasDeclaration
 				);
         break;
 
