@@ -1,31 +1,51 @@
-import {readdirSync, readFileSync} from 'fs-extra'
+import { readdirSync, readFileSync } from "fs-extra";
 import { parse } from "@typescript-eslint/typescript-estree";
-import path from 'path';
-import isNewDeclarationValid from '..';
-import { PREV_DECLARATION_PATH } from '../constants/filenames';
+import path from "path";
+import isNewDeclarationValid from "..";
+import { PREV_DECLARATION_PATH } from "../constants/filenames";
+import SourceCode from "../sourcecode";
+import { generateContext, pareCode } from "../helper";
 
 interface Config {
-	projectRoot: string;
+  projectRoot: string;
   declarationFiles: string[];
 }
 
 export default function areDeclareFilesValid({
-	projectRoot,
-	declarationFiles
+  projectRoot,
+  declarationFiles,
 }: Config) {
-	const prevDeclareFiles = readdirSync(path.join(projectRoot,PREV_DECLARATION_PATH));
-	for(const fileName of prevDeclareFiles) {
-		const prevFileString = readFileSync(path.join(projectRoot, `${PREV_DECLARATION_PATH }/${fileName}`), "utf8");
-    const pevParsedCode = parse(prevFileString);
-		const currentFile =  declarationFiles.find(f => f === fileName);
-		if(!currentFile) {
-			throw new Error("file removed!: " + fileName);
-		}
-		const currentFileString = readFileSync(path.join(projectRoot,`./${fileName}`), "utf8");
-    const currentParsedCode = parse(currentFileString);
-		if(!isNewDeclarationValid(pevParsedCode, currentParsedCode)) {
-			return false;
-		}
-	}
-return true;
+  const prevDeclareFiles = readdirSync(
+    path.join(projectRoot, PREV_DECLARATION_PATH)
+  );
+  for (const fileName of prevDeclareFiles) {
+    const prevFileString = readFileSync(
+      path.join(projectRoot, `${PREV_DECLARATION_PATH}/${fileName}`),
+      "utf8"
+    );
+    const pevParsedCode = pareCode(prevFileString);
+
+    const currentFile = declarationFiles.find((f) => f === fileName);
+    if (!currentFile) {
+      throw new Error("file removed!: " + fileName);
+    }
+    const currentFileString = readFileSync(
+      path.join(projectRoot, `./${fileName}`),
+      "utf8"
+    );
+    const currentParsedCode = parse(currentFileString, {
+      loc: true,
+      range: true,
+    });
+		const context = generateContext(prevFileString, currentFileString);
+    const validationResult = isNewDeclarationValid(
+			context,
+      pevParsedCode,
+      currentParsedCode
+    );
+    if (!validationResult.isValid) {
+      return validationResult;
+    }
+  }
+  return { isValid: true };
 }

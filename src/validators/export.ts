@@ -1,6 +1,6 @@
 import hasDeclarationBreakingChange from "..";
 import { EXPORT_REMOVED } from "../constants/errors";
-import {  getErrorInfo, sameExportInBoth, throwValidatorError } from "../helper";
+import {  Context, getErrorInfo, sameExportInBoth, throwValidatorError } from "../helper";
 import {
   AST_NODE_TYPES,
   ExportNamedDeclaration,
@@ -21,6 +21,7 @@ import { getPropertyDetailsErrorForTypeAlias } from "./typeAlias";
 import { AST } from "@typescript-eslint/typescript-estree";
 
 export default function ExportValidator(
+	context: Context,
   exportA: ExportNamedDeclaration,
   codeB: AST<any>
 ) {
@@ -30,13 +31,13 @@ export default function ExportValidator(
   } else {
     switch (exportA.declaration.type as keyof typeof AST_NODE_TYPES) {
       case AST_NODE_TYPES.ClassDeclaration:
-				return getClassPropertyDetailError(exportA.declaration as ClassDeclaration, (sameExport as ExportNamedDeclaration).declaration as ClassDeclaration)
+				return getClassPropertyDetailError(context,exportA.declaration as ClassDeclaration, (sameExport as ExportNamedDeclaration).declaration as ClassDeclaration)
       case AST_NODE_TYPES.ClassExpression:
         break;
 			case AST_NODE_TYPES.TSDeclareFunction:
-				return getFunctionDetailsError(exportA.declaration as TSDeclareFunction, (sameExport as ExportNamedDeclaration).declaration)
+				return getFunctionDetailsError(context, exportA.declaration as TSDeclareFunction, (sameExport as ExportNamedDeclaration).declaration)
       case AST_NODE_TYPES.TSEnumDeclaration:
-				return checkAllPrevEnumMembersExist(exportA.declaration as TSEnumDeclaration, (sameExport as ExportNamedDeclaration).declaration as TSEnumDeclaration)
+				return checkAllPrevEnumMembersExist(context, exportA.declaration as TSEnumDeclaration, (sameExport as ExportNamedDeclaration).declaration as TSEnumDeclaration)
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:
@@ -44,12 +45,14 @@ export default function ExportValidator(
 			break;
       case AST_NODE_TYPES.TSInterfaceDeclaration:
 				return getPropertyDetailsErrorForInterface(
+					context,
 					exportA.declaration as TSInterfaceDeclaration ,
 					(sameExport as ExportNamedDeclaration).declaration as TSInterfaceDeclaration
 				);
         break;
       case AST_NODE_TYPES.TSTypeAliasDeclaration:
 				return getPropertyDetailsErrorForTypeAlias(
+					context,
 					exportA.declaration as TSTypeAliasDeclaration ,
 					(sameExport as ExportNamedDeclaration).declaration as TSTypeAliasDeclaration
 				);

@@ -1,7 +1,7 @@
 import { FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, RETURN_TYPE_CHANGED } from '../constants/errors';
-import { checkParamsBeSameForTsDeclare, checkReturnTypeBeSameForTsDeclareFunction, getErrorInfo, getSameTypeDeclaration, objectToFormatedString } from '../helper';
+import { checkParamsBeSameForTsDeclare, checkReturnTypeBeSameForTsDeclareFunction, Context, getErrorInfo, getSameTypeDeclaration, objectToFormatedString } from '../helper';
 
-export default function tsDeclareFunctionValidator(func, codeB) {
+export default function tsDeclareFunctionValidator( context: Context ,func, codeB) {
 	const sameFunctionInDeclarationB = getSameTypeDeclaration(
     func,
     codeB
@@ -11,16 +11,17 @@ export default function tsDeclareFunctionValidator(func, codeB) {
   }
 
 	const propertyDetailsError = getFunctionDetailsError(
+		context,
     func,
     sameFunctionInDeclarationB
   );
   return  propertyDetailsError;
 }
 
-export function getFunctionDetailsError(func1, func2) {
+export function getFunctionDetailsError(context: Context,func1, func2) {
 	if (!checkReturnTypeBeSameForTsDeclareFunction(func1, func2)) {
-		return getErrorInfo(RETURN_TYPE_CHANGED, objectToFormatedString(func1));
+		return getErrorInfo(RETURN_TYPE_CHANGED, `${context.getTextForPrevSource(func1)}`);
 	} else if (!checkParamsBeSameForTsDeclare(func1, func2)) {
-		return getErrorInfo(FUNCTION_PARAMETER_CHANGED, objectToFormatedString(func1));
+		return getErrorInfo(FUNCTION_PARAMETER_CHANGED, `${context.getTextForPrevSource(func1)}`);
 	}
 }

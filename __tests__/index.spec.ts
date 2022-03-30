@@ -1,9 +1,35 @@
-import { parse } from "@typescript-eslint/typescript-estree";
-import compareDeclarations from '../src';
-import { CLASS_METHOD_CHANGED, CLASS_METHOD_REMOVED, ENUM_MEMBER_REMOVED, EXPORT_REMOVED, FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, MODULE_REMOVED, OPTIONAL_CHANGED, PROPERTY_CHANGED, PROPERTY_REMOVED, RETURN_TYPE_CHANGED, VARIABLE_REMOVED, VARIABLE_TYPE_CHANGED } from "../src/constants/errors";
+import isNewDeclarationValid from "../src";
+import {
+  CLASS_METHOD_CHANGED,
+  CLASS_METHOD_REMOVED,
+  ENUM_MEMBERS_CHANGED,
+  EXPORT_REMOVED,
+  FUNCTION_PARAMETER_CHANGED,
+  FUNCTION_REMOVED,
+  MODULE_REMOVED,
+  OPTIONAL_CHANGED,
+  PROPERTY_CHANGED,
+  RETURN_TYPE_CHANGED,
+  VARIABLE_REMOVED,
+  VARIABLE_TYPE_CHANGED,
+} from "../src/constants/errors";
+import {
+  addChalkPrefixToString,
+  generateContext,
+  getErrorInfo,
+  inValidDeclareErrorForTest,
+  pareCode,
+} from "../src/helper";
+import SourceCode from "../src/sourcecode";
 
+function getTwoParsedCodeAndContext(code1: string, code2: string) {
+  const parsedCode1 = pareCode(code1);
+  const parsedCode2 = pareCode(code2);
+  const context = generateContext(code1, code2);
+  return { context, parsedCode1, parsedCode2 };
+}
 describe("Breaking Change Tests", () => {
-	test("Interface Export removed", () => {
+  test("Interface Export removed", () => {
     const codeA = `
 			export interface A {
 				name: string;
@@ -14,18 +40,20 @@ describe("Breaking Change Tests", () => {
 
     const codeB = `
 		interface A {
+				name: string;
 				age: number;
 				getAge: () => string;
 			}
 		`;
-
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(EXPORT_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(inValidDeclareErrorForTest(EXPORT_REMOVED, "A"));
   });
 
-	test("AliasType Export removed", () => {
+  test("AliasType Export removed", () => {
     const codeA = `
 			export type A = {
 				name: string;
@@ -41,16 +69,17 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(EXPORT_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(inValidDeclareErrorForTest(EXPORT_REMOVED, "A"));
   });
 
-
-	test("Interface Property removed", () => {
+  test("Interface Property removed", () => {
     const codeA = `
-			type A = {
+			interface A {
 				name: string;
 				age: number;
 				getAge: () => string;
@@ -58,21 +87,27 @@ describe("Breaking Change Tests", () => {
 	`;
 
     const codeB = `
-		type A = {
+		interface A {
 				age: number;
 				getAge: () => string;
 			}
 		`;
-
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(PROPERTY_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        PROPERTY_CHANGED,
+        "property name: string; in interface A"
+      )
+    );
   });
 
-	test("AliasType Property removed", () => {
+  test("AliasType Property removed", () => {
     const codeA = `
-			export interface A {
+			export type A = {
 				name: string;
 				age: number;
 				getAge: () => string;
@@ -80,18 +115,21 @@ describe("Breaking Change Tests", () => {
 	`;
 
     const codeB = `
-			export interface A {
+			export type A  = {
 					age: number;
 					getAge: () => string;
 				}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(PROPERTY_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(PROPERTY_CHANGED, "property changed in type A")
+    );
   });
-
 
   test("Property return type change", () => {
     const codeA = `
@@ -110,13 +148,20 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(RETURN_TYPE_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        PROPERTY_CHANGED,
+        "property getAge: () => number; in interface A"
+      )
+    );
   });
-	
-	test("Property optional changed", () => {
+
+  test("Property optional changed", () => {
     const codeA = `
 			export interface A {
 				name?: string;
@@ -133,13 +178,20 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(OPTIONAL_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        PROPERTY_CHANGED,
+        "property name?: string; in interface A"
+      )
+    );
   });
 
-	test("Interface property parameters changed", () => {
+  test("Interface property parameters changed", () => {
     const codeA = `
 			export interface A {
 				calcTotal: (a: number, b: number) => number;
@@ -152,13 +204,20 @@ describe("Breaking Change Tests", () => {
 		}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        PROPERTY_CHANGED,
+        "property calcTotal: (a: number, b: number) => number; in interface A"
+      )
+    );
   });
 
-	test("AliasType property parameters changed", () => {
+  test("AliasType property parameters changed", () => {
     const codeA = `
 			export type A = {
 				calcTotal: (a: number, b: number) => number;
@@ -171,13 +230,17 @@ describe("Breaking Change Tests", () => {
 		}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(PROPERTY_CHANGED, "property changed in type A")
+    );
   });
 
-	test("Class Property removed", () => {
+  test("Class Property removed", () => {
     const codeA = `
 			export class Person {
 				name: string
@@ -189,13 +252,20 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(PROPERTY_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        PROPERTY_CHANGED,
+        "property name: string in class Person"
+      )
+    );
   });
 
-	test("Class Property changed", () => {
+  test("Class Property changed", () => {
     const codeA = `
 			export class Person {
 				name: string
@@ -208,13 +278,16 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(PROPERTY_CHANGED);
-  });
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+	expect(fn()).toMatchObject(
+			inValidDeclareErrorForTest( PROPERTY_CHANGED, "property name: string in class Person" )
+	)});	
 
-	test("Class method removed", () => {
+  test("Class method removed", () => {
     const codeA = `
 			export class MyMath {
 				calc(a: number,b: number): void;
@@ -227,13 +300,20 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(CLASS_METHOD_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        CLASS_METHOD_REMOVED,
+        "method calc(a: number,b: number): void; in class MyMath"
+      )
+    );
   });
 
-	test("Class method changed", () => {
+  test("Class method changed", () => {
     const codeA = `
 			export class MyMath {
 				calc(a: number,b: number): void;
@@ -246,13 +326,20 @@ describe("Breaking Change Tests", () => {
 			}
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(CLASS_METHOD_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        CLASS_METHOD_CHANGED,
+        "method calc(a: number,b: number): void; in class MyMath"
+      )
+    );
   });
 
-	test("Function return type changed", () => {
+  test("Function return type changed", () => {
     const codeA = `
 		export function MyMath(a: number, b:number): number;
 	`;
@@ -261,13 +348,20 @@ describe("Breaking Change Tests", () => {
 		export function MyMath(a: number, b:number): string;
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(RETURN_TYPE_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        RETURN_TYPE_CHANGED,
+        "function MyMath(a: number, b:number): number;"
+      )
+    );
   });
 
-	test("Function args changed", () => {
+  test("Function args changed", () => {
     const codeA = `
 		export function MyMath(a: number, b:number): number;
 	`;
@@ -276,13 +370,20 @@ describe("Breaking Change Tests", () => {
 		export function MyMath(a: number): number;
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(FUNCTION_PARAMETER_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        FUNCTION_PARAMETER_CHANGED,
+        "function MyMath(a: number, b:number): number;"
+      )
+    );
   });
 
-	test("Enum member removed", () => {
+  test("Enum member removed", () => {
     const codeA = `
 		export enum MyEnum {
 			a,
@@ -295,13 +396,20 @@ describe("Breaking Change Tests", () => {
 			a,
 		}		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(ENUM_MEMBER_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(
+        ENUM_MEMBERS_CHANGED,
+        "look at members of MyEnum"
+      )
+    );
   });
-	
-	test("Module removed", () => {
+
+  test("Module removed", () => {
     const codeA = `
 		module "myModule" {
 			const content: string;
@@ -311,26 +419,34 @@ describe("Breaking Change Tests", () => {
     const codeB = `
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(MODULE_REMOVED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+		const {isValid, info} = fn();
+		expect(isValid).toBe(false);
+		expect(info).toContain(
+		"Error: " + 	MODULE_REMOVED + " - " + "module \"myModule\"");
   });
 
-	test("Variable removed", () => {
+  test.skip("Variable removed", () => {
     const codeA = `
 		var myVar: number;
 	`;
     const codeB = `
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(VARIABLE_REMOVED);
-  });
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+		expect(fn()).toMatchObject(
+			inValidDeclareErrorForTest( VARIABLE_REMOVED, "variable myVar")
+		)});
 
-	test.only("Variable type changed", () => {
+  test.skip("Variable type changed", () => {
     const codeA = `
 		var myVar: number;
 	`;
@@ -338,10 +454,11 @@ describe("Breaking Change Tests", () => {
 		var myVar: string;
 		`;
 
-    const parsedCodeA = parse(codeA);
-    const parsedCodeB = parse(codeB);
-		const fn = () => compareDeclarations(parsedCodeA, parsedCodeB)
-    expect(fn).toThrow(VARIABLE_TYPE_CHANGED);
+    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
+      codeA,
+      codeB
+    );
+    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
+		expect(fn()).toMatchObject( inValidDeclareErrorForTest( VARIABLE_TYPE_CHANGED, "variable myVar"));
   });
-
 });

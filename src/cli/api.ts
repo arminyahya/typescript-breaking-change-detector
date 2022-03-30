@@ -19,8 +19,11 @@ export default function api(config: ApiConfig) {
 	if (!existsSync(path.join(projectRoot,  PREV_DECLARATION_PATH))) {
 		declarationSnapShotMaker({ projectRoot, declarationFiles });
 	} else {
-		if(areDeclareFilesValid({ projectRoot, declarationFiles })) {
+		const validationResult = areDeclareFilesValid({ projectRoot, declarationFiles });
+		if(validationResult.isValid) {
 			declarationSnapShotMaker({ projectRoot, declarationFiles });
+		} else {
+			console.log(validationResult.info);
 		}
 	}
 }

@@ -1,51 +1,48 @@
-import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { throwValidatorError } from "./helper";
+import { AST, AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
+import { ASTWithContext, Context, throwValidatorError } from "./helper";
 import ExportValidator from "./validators/export";
 import InterfaceValidator from "./validators/interface";
 import propertyValidator from "./validators/property";
 import TypeAliasValidator from "./validators/typeAlias";
-import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
+import { ExportNamedDeclaration, TSInterfaceDeclaration, TSModuleDeclaration, TSTypeAliasDeclaration, VariableDeclaration} from "@typescript-eslint/types/dist/generated/ast-spec";
 import tsDeclareFunctionValidator from "./validators/tsDeclareFunction";
 import moduleValidator from "./validators/module";
 import variableValidator from "./validators/variableValidator";
 import chalk from "chalk";
 
-export default function isNewDeclarationValid(codeA, codeB) {
+export default function isNewDeclarationValid(context: Context , codeA: AST<any>, codeB: AST<any>) {
   try {
     for (const declarationA of codeA.body) {
       switch (declarationA.type as keyof typeof AST_NODE_TYPES) {
         case AST_NODE_TYPES.ExportNamedDeclaration:
           throwValidatorError(
-            ExportValidator(declarationA as ExportNamedDeclaration, codeB)
+            ExportValidator(context, declarationA as ExportNamedDeclaration, codeB)
           );
           break;
         case AST_NODE_TYPES.TSInterfaceDeclaration:
-          throwValidatorError(InterfaceValidator(declarationA, codeB));
+          throwValidatorError(InterfaceValidator(context, declarationA as TSInterfaceDeclaration, codeB));
           break;
         case AST_NODE_TYPES.TSTypeAliasDeclaration:
-          throwValidatorError(TypeAliasValidator(declarationA, codeB));
+          throwValidatorError(TypeAliasValidator(context, declarationA as TSTypeAliasDeclaration, codeB));
           break;
         case AST_NODE_TYPES.TSPropertySignature:
-          throwValidatorError(propertyValidator(declarationA, codeB));
+          throwValidatorError(propertyValidator(context, declarationA, codeB));
           break;
         case AST_NODE_TYPES.FunctionDeclaration:
-          throwValidatorError(tsDeclareFunctionValidator(declarationA, codeB));
+          throwValidatorError(tsDeclareFunctionValidator(context, declarationA, codeB));
           break;
         case AST_NODE_TYPES.TSModuleDeclaration:
-          throwValidatorError(moduleValidator(declarationA, codeB));
+          throwValidatorError(moduleValidator(context, declarationA as TSModuleDeclaration, codeB));
           break;
         case AST_NODE_TYPES.VariableDeclaration:
-          throwValidatorError(variableValidator(declarationA, codeB));
+          throwValidatorError(variableValidator(declarationA as VariableDeclaration, codeB));
           break;
         default:
           break;
       }
     }
-		return true;
+    return { isValid: true };
   } catch (e) {
-		// eslint-disable-next-line no-console
-		console.log(chalk.red(e));
-		return false;
-		
-	}
+    return { isValid: false, info: chalk.red(e) };
+  }
 }

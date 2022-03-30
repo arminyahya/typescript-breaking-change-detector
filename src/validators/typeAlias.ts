@@ -17,6 +17,7 @@ import {
 } from "../helper";
 
 export default function TypeAliasValidator(
+	context,
   type1: TSTypeAliasDeclaration,
   codeB
 ) {
@@ -25,6 +26,7 @@ export default function TypeAliasValidator(
     return getErrorInfo(ALIASTYPE_REMOVED, type1.id.name);
   }
   const propertyDetailsErrorTypeAlias = getPropertyDetailsErrorForTypeAlias(
+		context,
     type1,
     sameMemberInDeclarationB
   );
@@ -34,6 +36,7 @@ export default function TypeAliasValidator(
 }
 
 export function getPropertyDetailsErrorForTypeAlias(
+	context,
   type1: TSTypeAliasDeclaration,
   type2: TSTypeAliasDeclaration
 ) {

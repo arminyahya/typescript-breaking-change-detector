@@ -10,7 +10,7 @@ import {
 } from "../constants/errors";
 import {
   checkPropertyBeSame,
-  ClassElementExceptComputedPropertyDefinition,
+  Context,
   getErrorInfo,
   getSameClassDeclaration,
   getSameMethodForClass,
@@ -18,6 +18,7 @@ import {
 } from "../helper";
 
 export default function classValidator(
+	context: Context,
   classDeclaration: ClassDeclaration,
   codeB
 ) {
@@ -28,10 +29,11 @@ export default function classValidator(
   if (!sameClassInDeclarationB) {
     return getErrorInfo(CLASS_REMOVED, classDeclaration.id.name);
   }
-  return getClassPropertyDetailError(classDeclaration, sameClassInDeclarationB);
+  return getClassPropertyDetailError( context ,classDeclaration, sameClassInDeclarationB);
 }
 
 export function getClassPropertyDetailError(
+	context: Context,	
   classDeclaration1: ClassDeclaration,
   classDeclaration2: ClassDeclaration
 ) {
@@ -43,11 +45,11 @@ export function getClassPropertyDetailError(
           classDeclaration2
         );
         if (!samePropertyInOtherClass) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${property} in class ${classDeclaration1.id.name}`);
+          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
         }
 
         if (!checkPropertyBeSame(property, samePropertyInOtherClass)) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${property} in class ${classDeclaration1.id.name}`);
+          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
         }
         break;
       }
@@ -58,11 +60,11 @@ export function getClassPropertyDetailError(
             classDeclaration2
           );
           if (!sameMehodInOtherClass) {
-            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${property} in class ${classDeclaration1.id.name}`);
+            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
           }
 
           if (!checkPropertyBeSame(property, sameMehodInOtherClass)) {
-            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${property} in class ${classDeclaration1.id.name}`);
+            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
           }
         }
         break;

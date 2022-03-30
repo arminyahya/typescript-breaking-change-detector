@@ -17,10 +17,14 @@ import {
   TSModuleDeclaration,
   TSTypeAliasDeclaration,
   VariableDeclaration,
-	MethodDefinitionNonComputedName
+  MethodDefinitionNonComputedName,
+  BaseNode,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import { AST } from "@typescript-eslint/typescript-estree";
 import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
+import chalk from "chalk";
+import { parse } from "@typescript-eslint/typescript-estree";
+import SourceCode from "./sourcecode";
 
 export type ExportDeclarationWithIdentifier =
   | ClassDeclaration
@@ -31,11 +35,11 @@ export type ExportDeclarationWithIdentifier =
   | TSInterfaceDeclaration
   | TSTypeAliasDeclaration;
 
-export type ClassElementExceptComputedPropertyDefinition = MethodDefinitionNonComputedName | PropertyDefinitionNonComputedName | StaticBlock | TSAbstractMethodDefinition | TSAbstractPropertyDefinition | TSIndexSignature;
+
 export function sameExportInBoth(
   item1: ExportNamedDeclaration,
   item2: AST<any>
-){
+) {
   return item2.body.find((declarationB) => {
     if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration) {
       if (
@@ -50,16 +54,23 @@ export function sameExportInBoth(
         return (
           (
             declarationB.declaration as unknown as ExportDeclarationWithIdentifier
-          ).id.name === (item1.declaration as ExportDeclarationWithIdentifier).id.name
+          ).id.name ===
+          (item1.declaration as ExportDeclarationWithIdentifier).id.name
         );
       }
     }
   });
 }
 
+export function getNodeExceptRangeAndLoc(node: BaseNode) {
+	const { range, loc, ...rest } = node;
+	return rest;
+}
+
 export function getSameTypeDeclaration(item1, item2) {
-  return item2.body.find(
-    (declarationB) => JSON.stringify(declarationB.id) === JSON.stringify(item1.id)
+	return item2.body.find(
+    (declarationB) =>
+      JSON.stringify(getNodeExceptRangeAndLoc(declarationB.id)) === JSON.stringify(getNodeExceptRangeAndLoc(item1.id))
   );
 }
 
@@ -151,5 +162,46 @@ export function getErrorInfo(type, info) {
 }
 
 export function objectToFormatedString(object) {
-	return JSON.stringify(object, null, 2);
+  return JSON.stringify(object, null, 2);
 }
+
+export function addChalkPrefixToString(str) {
+  return "Error: " + str;
+}
+
+export function inValidDeclareErrorForTest(type, message) {
+  return {
+    isValid: false,
+    info: chalk.red("Error: " + getErrorInfo(type, message)),
+  };
+}
+
+export function pareCode(code: string) {
+  const parsedCode = parse(code, {
+    loc: true,
+    range: true,
+  });
+	return parsedCode;
+}
+
+export function generateContext(prevCode: string, currentCode: string): Context {
+  return {
+    getTextForPrevSource: (node) => {
+      const sourceCode = new SourceCode(prevCode);
+      return sourceCode.getText(node, null, null);
+    },
+		getTextForCurrentSource: (node) => {
+      const sourceCode = new SourceCode(currentCode);
+      return sourceCode.getText(node, null, null);
+    },
+  };
+}
+
+export type ASTWithContext = AST<any> & {
+  context: Context;
+};
+
+export type Context = {
+  getTextForPrevSource: (node: BaseNode) => string;
+  getTextForCurrentSource: (node: BaseNode) => string;
+};

@@ -3,6 +3,7 @@ import {
 	checkOptionalBeSame,
 	checkParamsBeSame,
 	checkReturnTypeBeSame,
+	Context,
 	getErrorInfo,
   getSameTypeDeclaration,
 	isPropertyFunction,
@@ -11,7 +12,7 @@ import {
 
 import {TSInterfaceDeclaration, TSCallSignatureDeclaration, TSPropertySignature, TSConstructSignatureDeclaration, TSMethodSignature} from "@typescript-eslint/types/dist/generated/ast-spec";
 
-export default function InterfaceValidator(interface1: TSInterfaceDeclaration, codeB) {
+export default function InterfaceValidator(context: Context, interface1: TSInterfaceDeclaration, codeB ) {
   const sameInterfaceInDeclarationB = getSameTypeDeclaration(
     interface1,
     codeB
@@ -20,17 +21,18 @@ export default function InterfaceValidator(interface1: TSInterfaceDeclaration, c
     return getErrorInfo(INTERFACE_REMOVED, interface1.id.name);
   }
   const propertyDetailsError = getPropertyDetailsErrorForInterface(
+		context,
     interface1,
-    sameInterfaceInDeclarationB
+    sameInterfaceInDeclarationB,
   );
   return propertyDetailsError;
 }
 
-export function getPropertyDetailsErrorForInterface(item1: TSInterfaceDeclaration, item2: TSInterfaceDeclaration) {
+export function getPropertyDetailsErrorForInterface(context: Context, item1: TSInterfaceDeclaration, item2: TSInterfaceDeclaration) {
   for (const propertyA of item1.body.body) {
     const samePropertyInInterfaceB = item2.body.body.find((propertyB) => JSON.stringify(propertyB) === JSON.stringify(propertyA));
     if (!samePropertyInInterfaceB) {
-      return getErrorInfo(PROPERTY_CHANGED, `property ${objectToFormatedString(propertyA)} in interface ${item1.id.name}`);
+      return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyA)} in interface ${item1.id.name}`);
     }
   }
 }
