@@ -21,6 +21,7 @@ import {
   pareCode,
 } from "../src/helper";
 import SourceCode from "../src/sourcecode";
+import testRunner from "./helper";
 
 function getTwoParsedCodeAndContext(code1: string, code2: string) {
   const parsedCode1 = pareCode(code1);
@@ -28,386 +29,221 @@ function getTwoParsedCodeAndContext(code1: string, code2: string) {
   const context = generateContext(code1, code2);
   return { context, parsedCode1, parsedCode2 };
 }
+
 describe("Breaking Change Tests", () => {
-  test("Interface Export removed", () => {
-    const codeA = `
+  testRunner(
+    "Interface Export removed",
+    `
 			export interface A {
 				name: string;
 				age: number;
 				getAge: () => string;
 			}
-	`;
-
-    const codeB = `
+	`,
+    `
 		interface A {
 				name: string;
 				age: number;
 				getAge: () => string;
 			}
-		`;
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(inValidDeclareErrorForTest(EXPORT_REMOVED, "A"));
-  });
+		`,
+    EXPORT_REMOVED,
+    "A"
+  );
 
-  test("AliasType Export removed", () => {
-    const codeA = `
+  testRunner(
+    "AliasType Export removed",
+    `
 			export type A = {
 				name: string;
 				age: number;
 				getAge: () => string;
 			}
-	`;
-
-    const codeB = `
+	`,
+    `
 		type A = {
 				age: number;
 				getAge: () => string;
 			}
-		`;
+		`,
+    EXPORT_REMOVED,
+    "A"
+  );
 
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(inValidDeclareErrorForTest(EXPORT_REMOVED, "A"));
-  });
-
-  test("Interface Property removed", () => {
-    const codeA = `
-			interface A {
-				name: string;
-				age: number;
-				getAge: () => string;
-			}
-	`;
-
-    const codeB = `
-		interface A {
-				age: number;
-				getAge: () => string;
-			}
-		`;
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        PROPERTY_CHANGED,
-        "property name: string; in interface A"
-      )
-    );
-  });
-
-  test("AliasType Property removed", () => {
-    const codeA = `
-			export type A = {
-				name: string;
-				age: number;
-				getAge: () => string;
-			}
-	`;
-
-    const codeB = `
-			export type A  = {
-					age: number;
-					getAge: () => string;
-				}
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(PROPERTY_CHANGED, "property changed in type A")
-    );
-  });
-
-  test("Property return type change", () => {
-    const codeA = `
-			export interface A {
-				name: string;
-				age: number;
-				getAge: () => number;
-			}
-	`;
-
-    const codeB = `
-			export interface A {
-				name: string;
-				age: number;
-				getAge: () => string;
-			}
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        PROPERTY_CHANGED,
-        "property getAge: () => number; in interface A"
-      )
-    );
-  });
-
-  test("Property optional changed", () => {
-    const codeA = `
-			export interface A {
-				name?: string;
-				age: number;
-				getAge: () => number;
-			}
-	`;
-
-    const codeB = `
-			export interface A {
-				name: string;
-				age: number;
-				getAge: () => string;
-			}
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        PROPERTY_CHANGED,
-        "property name?: string; in interface A"
-      )
-    );
-  });
-
-  test("Interface property parameters changed", () => {
-    const codeA = `
-			export interface A {
-				calcTotal: (a: number, b: number) => number;
-			}
-	`;
-
-    const codeB = `
+  testRunner(
+    "Property return type change",
+    `
 		export interface A {
-			calcTotal: (a: number) => number;
+			getAge: () => number;
+			name: string;
+			age: number;
 		}
-		`;
+`,
+    `
+export interface A {
+	getAge: () => string;
+	age: number;
+	name: string;
+}
+`,
+    PROPERTY_CHANGED,
+    "property getAge: () => number; in interface A"
+  );
 
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        PROPERTY_CHANGED,
-        "property calcTotal: (a: number, b: number) => number; in interface A"
-      )
-    );
-  });
+  testRunner(
+    "Property optional changed",
+    `
+		export interface A {
+			name?: string;
+			age: number;
+			getAge: () => number;
+		}
+`,
+    `
+export interface A {
+	name: string;
+	age: number;
+	getAge: () => number;
+}
+`,
+    PROPERTY_CHANGED,
+    "property name?: string; in interface A"
+  );
 
-  test("AliasType property parameters changed", () => {
-    const codeA = `
-			export type A = {
-				calcTotal: (a: number, b: number) => number;
-			}
-	`;
+  testRunner(
+    "Interface property parameters changed",
+    `
+		export interface A {
+			calcTotal: (a: number, b: number) => number;
+		}
+`,
+    `
+export interface A {
+	calcTotal: (a: number) => number;
+}
+`,
+    PROPERTY_CHANGED,
+    "property calcTotal: (a: number, b: number) => number; in interface A"
+  );
 
-    const codeB = `
+  testRunner(
+    "AliasType property parameters changed",
+    `
 		export type A = {
-			calcTotal: (a: number) => number;
+			calcTotal: (a: number, b: number) => number;
 		}
-		`;
+`,
+    `
+export type A = {
+	calcTotal: (a: number) => number;
+}
+`,
+    PROPERTY_CHANGED,
+    "property changed in type A"
+  );
 
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(PROPERTY_CHANGED, "property changed in type A")
-    );
-  });
+  testRunner(
+    "Class Property removed",
+    `
+		export class Person {
+			name: string
+		}
+`,
+    `
+export class Person {
+}
+`,
+    PROPERTY_CHANGED,
+    "property name: string in class Person"
+  );
 
-  test("Class Property removed", () => {
-    const codeA = `
+  testRunner(
+    "Class Property changed",
+    `
 			export class Person {
 				name: string
 			}
-	`;
+	`,
+    `
+	export class Person {
+		name: number
+	}
+`,
+    PROPERTY_CHANGED,
+    "property name: string in class Person"
+  );
 
-    const codeB = `
-			export class Person {
-			}
-		`;
+  testRunner(
+    "Class method removed",
+    `
+		export class MyMath {
+			calc(a: number,b: number): void;
+		}
+`,
+    `
+export class MyMath {
+	total(a: number,b: number): void;
+}
+`,
+    CLASS_METHOD_REMOVED,
+    "method calc(a: number,b: number): void; in class MyMath"
+  );
 
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        PROPERTY_CHANGED,
-        "property name: string in class Person"
-      )
-    );
-  });
+  testRunner(
+    "Class method changed",
+    `
+		export class MyMath {
+			calc(a: number,b: number): void;
+		}
+`,
+    `
+		export class MyMath {
+			calc(a: number): void;
+		}
+`,
+    CLASS_METHOD_CHANGED,
+    "method calc(a: number,b: number): void; in class MyMath"
+  );
 
-  test("Class Property changed", () => {
-    const codeA = `
-			export class Person {
-				name: string
-			}
-	`;
-
-    const codeB = `
-			export class Person {
-				name: number
-			}
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-	expect(fn()).toMatchObject(
-			inValidDeclareErrorForTest( PROPERTY_CHANGED, "property name: string in class Person" )
-	)});	
-
-  test("Class method removed", () => {
-    const codeA = `
-			export class MyMath {
-				calc(a: number,b: number): void;
-			}
-	`;
-
-    const codeB = `
-			export class MyMath {
-				total(a: number,b: number): void;
-			}
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        CLASS_METHOD_REMOVED,
-        "method calc(a: number,b: number): void; in class MyMath"
-      )
-    );
-  });
-
-  test("Class method changed", () => {
-    const codeA = `
-			export class MyMath {
-				calc(a: number,b: number): void;
-			}
-	`;
-
-    const codeB = `
-			export class MyMath {
-				calc(a: number): void;
-			}
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        CLASS_METHOD_CHANGED,
-        "method calc(a: number,b: number): void; in class MyMath"
-      )
-    );
-  });
-
-  test("Function return type changed", () => {
-    const codeA = `
+  testRunner(
+    "Function return type changed",
+    `
 		export function MyMath(a: number, b:number): number;
-	`;
+	`,
+    `
+	export function MyMath(a: number, b:number): string;
+	`,
+    RETURN_TYPE_CHANGED,
+    "function MyMath(a: number, b:number): number;"
+  );
 
-    const codeB = `
-		export function MyMath(a: number, b:number): string;
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        RETURN_TYPE_CHANGED,
-        "function MyMath(a: number, b:number): number;"
-      )
-    );
-  });
-
-  test("Function args changed", () => {
-    const codeA = `
+	testRunner(
+    "Function args changed",
+		`
 		export function MyMath(a: number, b:number): number;
-	`;
+	`,
+	`
+	export function MyMath(a: number): number;
+	`,
+	FUNCTION_PARAMETER_CHANGED,
+	"function MyMath(a: number, b:number): number;"
+  );
 
-    const codeB = `
-		export function MyMath(a: number): number;
-		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        FUNCTION_PARAMETER_CHANGED,
-        "function MyMath(a: number, b:number): number;"
-      )
-    );
-  });
-
-  test("Enum member removed", () => {
-    const codeA = `
+	testRunner(
+    "Enum member removed",
+		`
 		export enum MyEnum {
 			a,
 			b
 		}
-	`;
-
-    const codeB = `
+	`,
+	`
 		export enum MyEnum {
 			a,
-		}		`;
-
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(
-        ENUM_MEMBERS_CHANGED,
-        "look at members of MyEnum"
-      )
-    );
-  });
+		}		`,
+		ENUM_MEMBERS_CHANGED,
+		"look at members of MyEnum"
+  );
 
   test("Module removed", () => {
     const codeA = `
@@ -424,10 +260,11 @@ describe("Breaking Change Tests", () => {
       codeB
     );
     const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-		const {isValid, info} = fn();
-		expect(isValid).toBe(false);
-		expect(info).toContain(
-		"Error: " + 	MODULE_REMOVED + " - " + "module \"myModule\"");
+    const { isValid, info } = fn();
+    expect(isValid).toBe(false);
+    expect(info).toContain(
+      "Error: " + MODULE_REMOVED + " - " + 'module "myModule"'
+    );
   });
 
   test.skip("Variable removed", () => {
@@ -442,9 +279,10 @@ describe("Breaking Change Tests", () => {
       codeB
     );
     const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-		expect(fn()).toMatchObject(
-			inValidDeclareErrorForTest( VARIABLE_REMOVED, "variable myVar")
-		)});
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(VARIABLE_REMOVED, "variable myVar")
+    );
+  });
 
   test.skip("Variable type changed", () => {
     const codeA = `
@@ -459,6 +297,8 @@ describe("Breaking Change Tests", () => {
       codeB
     );
     const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-		expect(fn()).toMatchObject( inValidDeclareErrorForTest( VARIABLE_TYPE_CHANGED, "variable myVar"));
+    expect(fn()).toMatchObject(
+      inValidDeclareErrorForTest(VARIABLE_TYPE_CHANGED, "variable myVar")
+    );
   });
 });
