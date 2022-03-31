@@ -26,47 +26,8 @@ import chalk from "chalk";
 import { parse } from "@typescript-eslint/typescript-estree";
 import SourceCode from "./sourcecode";
 
-export type ExportDeclarationWithIdentifier =
-  | ClassDeclaration
-  | ClassExpression
-  | FunctionDeclaration
-  | TSDeclareFunction
-  | TSEnumDeclaration
-  | TSInterfaceDeclaration
-  | TSTypeAliasDeclaration;
 
-
-export function sameExportInBoth(
-	context: Context,
-  item1: ExportNamedDeclaration,
-  item2: AST<any>
-) {
-  return item2.body.find((declarationB) => {
-    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration && declarationB.declaration.type === item1.declaration.type) {
-      if (
-        item1.declaration.type === AST_NODE_TYPES.VariableDeclaration
-      ) {
-				console.log(context.getTextForPrevSource(item1.declaration));
-				console.log(context.getTextForCurrentSource(declarationB.declaration));
-				return context.getTextForCurrentSource(declarationB.declaration) === context.getTextForPrevSource(item1.declaration);
-        // variable declaration implementation is not yet complete
-      } else if (
-        item1.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
-      ) {
-        // module declaration implementation is not yet complete
-      } else {
-        return (
-          (
-            item1.declaration as unknown as ExportDeclarationWithIdentifier
-          ).id.name ===
-          (item1.declaration as ExportDeclarationWithIdentifier).id.name
-        );
-      }
-    }
-  });
-}
-
-export function getNodeExceptRangeAndLoc(node: BaseNode) {
+export function getIdExceptRangeAndLoc(node: BaseNode) {
 	const { range, loc, ...rest } = node;
 	return rest;
 }
@@ -74,7 +35,7 @@ export function getNodeExceptRangeAndLoc(node: BaseNode) {
 export function getSameTypeDeclaration(item1, item2) {
 	return item2.body.find(
     (declarationB) =>
-      JSON.stringify(getNodeExceptRangeAndLoc(declarationB.id)) === JSON.stringify(getNodeExceptRangeAndLoc(item1.id))
+      JSON.stringify(getIdExceptRangeAndLoc(declarationB.id)) === JSON.stringify(getIdExceptRangeAndLoc(item1.id))
   );
 }
 

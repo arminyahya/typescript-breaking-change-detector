@@ -1,6 +1,6 @@
 import hasDeclarationBreakingChange from "..";
 import { EXPORT_REMOVED } from "../constants/errors";
-import {  Context, getErrorInfo, sameExportInBoth, throwValidatorError } from "../helper";
+import {  Context, getErrorInfo, throwValidatorError } from "../helper";
 import {
   AST_NODE_TYPES,
   ExportNamedDeclaration,
@@ -10,7 +10,8 @@ import {
 	FunctionDeclaration,
 	VariableDeclaration,
 	TSDeclareFunction,
-	TSEnumDeclaration
+	TSEnumDeclaration,
+	ClassExpression
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator, { getPropertyDetailsErrorForInterface } from "./interface";
 import classValidator, { getClassPropertyDetailError } from "./class";
@@ -63,4 +64,42 @@ export default function ExportValidator(
         break;
     }
   }
+}
+
+
+export type ExportDeclarationWithIdentifier =
+  | ClassDeclaration
+  | ClassExpression
+  | FunctionDeclaration
+  | TSDeclareFunction
+  | TSEnumDeclaration
+  | TSInterfaceDeclaration
+  | TSTypeAliasDeclaration;
+
+
+export function sameExportInBoth(
+	context: Context,
+  item1: ExportNamedDeclaration,
+  item2: AST<any>
+) {
+  return item2.body.find((declarationB) => {
+    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration && declarationB.declaration.type === item1.declaration.type) {
+      if (
+        item1.declaration.type === AST_NODE_TYPES.VariableDeclaration
+      ) {
+				return context.getTextForCurrentSource(declarationB.declaration) === context.getTextForPrevSource(item1.declaration);
+      } else if (
+        item1.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
+      ) {
+        // module declaration implementation is not yet complete
+      } else {
+        return (
+          (
+            item1.declaration as unknown as ExportDeclarationWithIdentifier
+          ).id.name ===
+          (item1.declaration as ExportDeclarationWithIdentifier).id.name
+        );
+      }
+    }
+  });
 }

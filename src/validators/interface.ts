@@ -5,7 +5,6 @@ import {
 	checkReturnTypeBeSame,
 	Context,
 	getErrorInfo,
-  getNodeExceptRangeAndLoc,
   getSameTypeDeclaration,
 	isPropertyFunction,
 	objectToFormatedString,
@@ -31,7 +30,7 @@ export default function InterfaceValidator(context: Context, interface1: TSInter
 
 export function getPropertyDetailsErrorForInterface(context: Context, item1: TSInterfaceDeclaration, item2: TSInterfaceDeclaration) {
   for (const propertyA of item1.body.body) {
-    const samePropertyInInterfaceB = item2.body.body.find((propertyB) => JSON.stringify(getNodeExceptRangeAndLoc(propertyB)) === JSON.stringify(getNodeExceptRangeAndLoc(propertyA)));
+    const samePropertyInInterfaceB = item2.body.body.find((propertyB) => context.getTextForCurrentSource(propertyB) ===  context.getTextForPrevSource(propertyA));
     if (!samePropertyInInterfaceB) {
       return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyA)} in interface ${item1.id.name}`);
     }
