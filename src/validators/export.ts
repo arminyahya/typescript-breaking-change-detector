@@ -25,9 +25,9 @@ export default function ExportValidator(
   exportA: ExportNamedDeclaration,
   codeB: AST<any>
 ) {
-  const sameExport= sameExportInBoth(exportA, codeB);
+  const sameExport= sameExportInBoth(context, exportA, codeB);
   if (!sameExport) {
-    return getErrorInfo(EXPORT_REMOVED, (exportA.declaration as any).id.name);
+    return getErrorInfo(EXPORT_REMOVED, context.getTextForPrevSource(exportA.declaration));
   } else {
     switch (exportA.declaration.type as keyof typeof AST_NODE_TYPES) {
       case AST_NODE_TYPES.ClassDeclaration:
@@ -41,6 +41,7 @@ export default function ExportValidator(
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:
+				
 			// variable declaration is not yet completed
 			break;
       case AST_NODE_TYPES.TSInterfaceDeclaration:

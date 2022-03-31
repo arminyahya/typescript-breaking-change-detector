@@ -37,23 +37,27 @@ export type ExportDeclarationWithIdentifier =
 
 
 export function sameExportInBoth(
+	context: Context,
   item1: ExportNamedDeclaration,
   item2: AST<any>
 ) {
   return item2.body.find((declarationB) => {
-    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration) {
+    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration && declarationB.declaration.type === item1.declaration.type) {
       if (
-        declarationB.declaration.type === AST_NODE_TYPES.VariableDeclaration
+        item1.declaration.type === AST_NODE_TYPES.VariableDeclaration
       ) {
+				console.log(context.getTextForPrevSource(item1.declaration));
+				console.log(context.getTextForCurrentSource(declarationB.declaration));
+				return context.getTextForCurrentSource(declarationB.declaration) === context.getTextForPrevSource(item1.declaration);
         // variable declaration implementation is not yet complete
       } else if (
-        declarationB.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
+        item1.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
       ) {
         // module declaration implementation is not yet complete
       } else {
         return (
           (
-            declarationB.declaration as unknown as ExportDeclarationWithIdentifier
+            item1.declaration as unknown as ExportDeclarationWithIdentifier
           ).id.name ===
           (item1.declaration as ExportDeclarationWithIdentifier).id.name
         );
