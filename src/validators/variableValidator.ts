@@ -7,8 +7,10 @@ import {
   VariableDeclaration,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import { AST } from "@typescript-eslint/typescript-estree";
+import { Context, getErrorInfo } from "../helper";
 
 export default function variableValidator(
+	context: Context,
   var1: VariableDeclaration,
   codeB: AST<any>
 ) {
@@ -17,12 +19,12 @@ export default function variableValidator(
       const sameVariableInCodeB = codeB.body.find((node) => {
         if (node.type === "VariableDeclaration") {
           for (const declaration2 of node.declarations) {
-            return declaration2 === declaration;
+            return context.getTextForCurrentSource(declaration2)  === context.getTextForPrevSource(declaration);
           }
         }
       });
       if (!sameVariableInCodeB) {
-        return VARIABLE_CHANGED_OR_REMOVED;
+				return getErrorInfo(VARIABLE_CHANGED_OR_REMOVED, context.getTextForPrevSource(declaration));
       }
     }
   }

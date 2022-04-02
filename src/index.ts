@@ -35,7 +35,7 @@ export default function isNewDeclarationValid(context: Context , codeA: AST<any>
           throwValidatorError(moduleValidator(context, declarationA as TSModuleDeclaration, codeB));
           break;
         case AST_NODE_TYPES.VariableDeclaration:
-          throwValidatorError(variableValidator(declarationA as VariableDeclaration, codeB));
+          throwValidatorError(variableValidator(context, declarationA as VariableDeclaration, codeB));
           break;
         default:
           break;

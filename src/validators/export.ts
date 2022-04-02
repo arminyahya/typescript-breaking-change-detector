@@ -42,8 +42,7 @@ export default function ExportValidator(
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:
-				
-			// variable declaration is not yet completed
+				// We already checked variable in sameExportInBoth function.
 			break;
       case AST_NODE_TYPES.TSInterfaceDeclaration:
 				return getPropertyDetailsErrorForInterface(
