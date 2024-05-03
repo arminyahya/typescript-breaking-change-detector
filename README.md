@@ -1,3 +1,5 @@
+### Intruduction 
+Project to compare typescript interfaces with their previous version 
 ### Roadmap
 [] Add necessary ClassDeclaration implementation
 	[+] Add popertyDefinition implementation
