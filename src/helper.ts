@@ -80,7 +80,7 @@ export function getSameProperty(peropertyInprevCode, currentCode) {
   );
 }
 
-export function throwValidatorError(error) {
+export function checkAndThrowError(error) {
   if (error) {
     throw new Error(error);
   }

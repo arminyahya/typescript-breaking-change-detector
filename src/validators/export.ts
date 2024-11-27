@@ -1,6 +1,6 @@
 import hasDeclarationBreakingChange from "..";
 import { EXPORT_REMOVED } from "../constants/errors";
-import {  Context, getErrorInfo, throwValidatorError } from "../helper";
+import {  Context, getErrorInfo, checkAndThrowError } from "../helper";
 import {
   AST_NODE_TYPES,
   ExportNamedDeclaration,
