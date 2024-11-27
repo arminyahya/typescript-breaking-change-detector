@@ -19,52 +19,52 @@ import {
 
 export default function classValidator(
 	context: Context,
-  classDeclaration: ClassDeclaration,
-  codeB
+  classDeclarationInPrevCode: ClassDeclaration,
+  currentCode
 ) {
   const sameClassInDeclarationB = getSameClassDeclaration(
-    classDeclaration,
-    codeB
+    classDeclarationInPrevCode,
+    currentCode
   );
   if (!sameClassInDeclarationB) {
-    return getErrorInfo(CLASS_REMOVED, classDeclaration.id.name);
+    return getErrorInfo(CLASS_REMOVED, classDeclarationInPrevCode.id.name);
   }
-  return getClassPropertyDetailError( context ,classDeclaration, sameClassInDeclarationB);
+  return getClassPropertyDetailError( context ,classDeclarationInPrevCode, sameClassInDeclarationB);
 }
 
 export function getClassPropertyDetailError(
 	context: Context,	
-  classDeclaration1: ClassDeclaration,
-  classDeclaration2: ClassDeclaration
+  classDeclarationInPrevCode: ClassDeclaration,
+  classDeclarationInCurrentCode: ClassDeclaration
 ) {
-  for (const property of classDeclaration1.body.body) {
-    switch (property.type) {
+  for (const propertyInPrevCode of classDeclarationInPrevCode.body.body) {
+    switch (propertyInPrevCode.type) {
       case AST_NODE_TYPES.PropertyDefinition: {
         const samePropertyInOtherClass = getSamePropertyForClass(
-          property,
-          classDeclaration2
+          propertyInPrevCode,
+          classDeclarationInCurrentCode
         );
         if (!samePropertyInOtherClass) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
+          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
         }
 
-        if (!checkPropertyBeSame(property, samePropertyInOtherClass)) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
+        if (!checkPropertyBeSame(propertyInPrevCode, samePropertyInOtherClass)) {
+          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
         }
         break;
       }
       case AST_NODE_TYPES.MethodDefinition:
         {
           const sameMehodInOtherClass = getSameMethodForClass(
-            property,
-            classDeclaration2
+            propertyInPrevCode,
+            classDeclarationInCurrentCode
           );
           if (!sameMehodInOtherClass) {
-            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
+            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
           }
 
-          if (!checkPropertyBeSame(property, sameMehodInOtherClass)) {
-            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(property)} in class ${classDeclaration1.id.name}`);
+          if (!checkPropertyBeSame(propertyInPrevCode, sameMehodInOtherClass)) {
+            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
           }
         }
         break;

@@ -2,12 +2,12 @@ import { TSModuleDeclaration } from '@typescript-eslint/types/dist/generated/ast
 import { MODULE_REMOVED } from '../constants/errors';
 import { Context, getErrorInfo, getSameTypeDeclaration, objectToFormatedString } from '../helper';
 
-export default function moduleValidator(content: Context , module1: TSModuleDeclaration, codeB) {
-	const sameInterfaceInDeclarationB = getSameTypeDeclaration(
-    module1,
-    codeB
+export default function moduleValidator(content: Context , moduleDeclarationInPrevCode: TSModuleDeclaration, currentCode) {
+	const sameInterfaceInDeclarationInCurrentCode = getSameTypeDeclaration(
+    moduleDeclarationInPrevCode,
+    currentCode
   );
-  if (!sameInterfaceInDeclarationB) {
-    return getErrorInfo(MODULE_REMOVED, content.getTextForPrevSource(module1));
+  if (!sameInterfaceInDeclarationInCurrentCode) {
+    return getErrorInfo(MODULE_REMOVED, content.getTextForPrevSource(moduleDeclarationInPrevCode));
   }
 }

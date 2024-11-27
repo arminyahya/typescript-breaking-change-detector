@@ -13,17 +13,17 @@ import {
   objectToFormatedString,
 } from "../helper";
 
-export default function propertyValidator(context, property, codeB) {
-  const sameProperty = getSameProperty(property, codeB);
-  if (!sameProperty) {
+export default function propertyValidator(context, propertyInPrevCode, currentCode) {
+  const samePropertyInCurrentCode = getSameProperty(propertyInPrevCode, currentCode);
+  if (!samePropertyInCurrentCode) {
     return getErrorInfo(
       PROPERTY_REMOVED,
-      `property ${context.getTextForPrevSource(property)}`
+      `property ${context.getTextForPrevSource(propertyInPrevCode)}`
     );
-  } else if ( context.getTextForPrevSource(property) !== context.getTextForCurrentSource(sameProperty)) {
+  } else if ( context.getTextForPrevSource(propertyInPrevCode) !== context.getTextForCurrentSource(samePropertyInCurrentCode)) {
     return getErrorInfo(
       OPTIONAL_CHANGED,
-      `property ${context.getTextForPrevSource(property)}`
+      `property ${context.getTextForPrevSource(propertyInPrevCode)}`
     );
   }
 }

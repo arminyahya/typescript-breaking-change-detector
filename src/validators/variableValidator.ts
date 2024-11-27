@@ -11,15 +11,15 @@ import { Context, getErrorInfo } from "../helper";
 
 export default function variableValidator(
 	context: Context,
-  var1: VariableDeclaration,
-  codeB: AST<any>
+  prevVar: VariableDeclaration,
+  currentCode: AST<any>
 ) {
-  for (const declaration of var1.declarations) {
+  for (const declaration of prevVar.declarations) {
     if (declaration.id.type === "Identifier") {
-      const sameVariableInCodeB = codeB.body.find((node) => {
-        if (node.type === "VariableDeclaration") {
-          for (const declaration2 of node.declarations) {
-            return context.getTextForCurrentSource(declaration2)  === context.getTextForPrevSource(declaration);
+      const sameVariableInCodeB = currentCode.body.find((statement) => {
+        if (statement.type === "VariableDeclaration") {
+          for (const declaration2 of statement.declarations) {
+            return context.getTextForCurrentSource(declaration2 as unknown as VariableDeclaration)  === context.getTextForPrevSource(declaration);
           }
         }
       });
@@ -31,14 +31,14 @@ export default function variableValidator(
 }
 
 export function getVariableDetailError(
-  item1: VariableDeclaration,
-  item2: VariableDeclaration
+  variableDeclarationInPrevCode: VariableDeclaration,
+  variableDeclarationInCurrentCode: VariableDeclaration
 ) {
-  for (const propertyA of item1.declarations) {
-    const samePropertyInVarB = item2.declarations.find(
-      (propertyB) => propertyB === propertyA
+  for (const propertyInPrevCode of variableDeclarationInPrevCode.declarations) {
+    const samePropertyInCurrentCode = variableDeclarationInCurrentCode.declarations.find(
+      (property) => property === propertyInPrevCode
     );
-    if (!samePropertyInVarB) {
+    if (!samePropertyInCurrentCode) {
       return PROPERTY_CHANGED;
     }
   }

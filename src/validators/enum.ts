@@ -7,23 +7,23 @@ import {
   TSEnumMemberNonComputedName,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 
-export default function EnumValidator( context ,enum1: TSEnumDeclaration, codeB) {
-  const sameEnumInDeclarationB = getSameTypeDeclaration(enum1, codeB);
+export default function EnumValidator( context, enumDeclarationInPrevCode: TSEnumDeclaration, currentCode) {
+  const sameEnumInDeclarationB = getSameTypeDeclaration(enumDeclarationInPrevCode, currentCode);
   if (!sameEnumInDeclarationB) {
     return getErrorInfo(ENUM_REMOVED, sameEnumInDeclarationB.id.name);
   }
-  return checkAllPrevEnumMembersExist( context ,enum1, sameEnumInDeclarationB);
+  return checkAllPrevEnumMembersExist( context ,enumDeclarationInPrevCode, sameEnumInDeclarationB);
 }
 
 export function checkAllPrevEnumMembersExist(
 	context,
-  enum1: TSEnumDeclaration,
-  enum2: TSEnumDeclaration
+  enumDeclarationInPrevCode: TSEnumDeclaration,
+  enumDeclarationInCurrentCode: TSEnumDeclaration
 ) {
-  if (JSON.stringify(enum1.members) !== JSON.stringify(enum2.members)) {
+  if (JSON.stringify(enumDeclarationInPrevCode.members) !== JSON.stringify(enumDeclarationInCurrentCode.members)) {
     return getErrorInfo(
       ENUM_MEMBERS_CHANGED,
-      `look at members of ${enum1.id.name}`
+      `look at members of ${enumDeclarationInPrevCode.id.name}`
     );
   }
 }
