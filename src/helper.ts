@@ -34,8 +34,8 @@ export function getIdExceptRangeAndLoc(node: BaseNode) {
 
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
 	return currentCode.body.find(
-    (declaration) => {
-     return JSON.stringify(getIdExceptRangeAndLoc(declaration.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
+    (statement) => {
+     return JSON.stringify(getIdExceptRangeAndLoc(statement.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
     }
   );
 }
@@ -74,9 +74,9 @@ export function isPropertyFunction(property) {
   return property.typeAnnotation.typeAnnotation.type === "TSFunctionType";
 }
 
-export function getSameProperty(peroperty, codeB) {
-  return codeB.body.find(
-    (propertyB) => propertyB.key.name === peroperty.key.name
+export function getSameProperty(peropertyInprevCode, currentCode) {
+  return currentCode.body.find(
+    (statement) => statement.key.name === peropertyInprevCode.key.name
   );
 }
 

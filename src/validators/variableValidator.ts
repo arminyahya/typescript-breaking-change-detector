@@ -16,9 +16,9 @@ export default function variableValidator(
 ) {
   for (const declaration of prevVar.declarations) {
     if (declaration.id.type === "Identifier") {
-      const sameVariableInCodeB = currentCode.body.find((node) => {
-        if (node.type === "VariableDeclaration") {
-          for (const declaration2 of node.declarations) {
+      const sameVariableInCodeB = currentCode.body.find((statement) => {
+        if (statement.type === "VariableDeclaration") {
+          for (const declaration2 of statement.declarations) {
             return context.getTextForCurrentSource(declaration2 as unknown as VariableDeclaration)  === context.getTextForPrevSource(declaration);
           }
         }
@@ -34,11 +34,11 @@ export function getVariableDetailError(
   variableDeclarationInPrevCode: VariableDeclaration,
   variableDeclarationInCurrentCode: VariableDeclaration
 ) {
-  for (const propertyA of variableDeclarationInPrevCode.declarations) {
-    const samePropertyInVarB = variableDeclarationInCurrentCode.declarations.find(
-      (propertyB) => propertyB === propertyA
+  for (const propertyInPrevCode of variableDeclarationInPrevCode.declarations) {
+    const samePropertyInCurrentCode = variableDeclarationInCurrentCode.declarations.find(
+      (property) => property === propertyInPrevCode
     );
-    if (!samePropertyInVarB) {
+    if (!samePropertyInCurrentCode) {
       return PROPERTY_CHANGED;
     }
   }

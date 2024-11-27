@@ -81,12 +81,12 @@ export function sameExportInBoth(
   exportDeclarationInPrevCode: ExportNamedDeclaration,
   currentCode: AST<any>
 ) {
-  return currentCode.body.find((declarationB) => {
-    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration && declarationB.declaration.type === exportDeclarationInPrevCode.declaration.type) {
+  return currentCode.body.find((statement) => {
+    if (statement.type === AST_NODE_TYPES.ExportNamedDeclaration && statement.declaration.type === exportDeclarationInPrevCode.declaration.type) {
       if (
         exportDeclarationInPrevCode.declaration.type === AST_NODE_TYPES.VariableDeclaration
       ) {
-				return context.getTextForCurrentSource((declarationB as ExportNamedDeclaration).declaration) === context.getTextForPrevSource(exportDeclarationInPrevCode.declaration);
+				return context.getTextForCurrentSource((statement as ExportNamedDeclaration).declaration) === context.getTextForPrevSource(exportDeclarationInPrevCode.declaration);
       } else if (
         exportDeclarationInPrevCode.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
       ) {

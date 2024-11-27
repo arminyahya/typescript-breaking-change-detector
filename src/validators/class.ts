@@ -37,34 +37,34 @@ export function getClassPropertyDetailError(
   classDeclarationInPrevCode: ClassDeclaration,
   classDeclarationInCurrentCode: ClassDeclaration
 ) {
-  for (const property of classDeclarationInPrevCode.body.body) {
-    switch (property.type) {
+  for (const propertyInPrevCode of classDeclarationInPrevCode.body.body) {
+    switch (propertyInPrevCode.type) {
       case AST_NODE_TYPES.PropertyDefinition: {
         const samePropertyInOtherClass = getSamePropertyForClass(
-          property,
+          propertyInPrevCode,
           classDeclarationInCurrentCode
         );
         if (!samePropertyInOtherClass) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(property)} in class ${classDeclarationInPrevCode.id.name}`);
+          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
         }
 
-        if (!checkPropertyBeSame(property, samePropertyInOtherClass)) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(property)} in class ${classDeclarationInPrevCode.id.name}`);
+        if (!checkPropertyBeSame(propertyInPrevCode, samePropertyInOtherClass)) {
+          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
         }
         break;
       }
       case AST_NODE_TYPES.MethodDefinition:
         {
           const sameMehodInOtherClass = getSameMethodForClass(
-            property,
+            propertyInPrevCode,
             classDeclarationInCurrentCode
           );
           if (!sameMehodInOtherClass) {
-            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(property)} in class ${classDeclarationInPrevCode.id.name}`);
+            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
           }
 
-          if (!checkPropertyBeSame(property, sameMehodInOtherClass)) {
-            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(property)} in class ${classDeclarationInPrevCode.id.name}`);
+          if (!checkPropertyBeSame(propertyInPrevCode, sameMehodInOtherClass)) {
+            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
           }
         }
         break;
