@@ -12,27 +12,27 @@ import {
 
 import {TSInterfaceDeclaration, TSCallSignatureDeclaration, TSPropertySignature, TSConstructSignatureDeclaration, TSMethodSignature} from "@typescript-eslint/types/dist/generated/ast-spec";
 
-export default function InterfaceValidator(context: Context, prevInterface: TSInterfaceDeclaration, currentCode ) {
+export default function InterfaceValidator(context: Context, interfaceDeclarationInPrevCode: TSInterfaceDeclaration, currentCode ) {
   const sameInterfaceInDeclarationB = getSameTypeDeclaration(
-    prevInterface,
+    interfaceDeclarationInPrevCode,
     currentCode
   );
   if (!sameInterfaceInDeclarationB) {
-    return getErrorInfo(INTERFACE_REMOVED, prevInterface.id.name);
+    return getErrorInfo(INTERFACE_REMOVED, interfaceDeclarationInPrevCode.id.name);
   }
   const propertyDetailsError = getPropertyDetailsErrorForInterface(
 		context,
-    prevInterface,
+    interfaceDeclarationInPrevCode,
     sameInterfaceInDeclarationB,
   );
   return propertyDetailsError;
 }
 
-export function getPropertyDetailsErrorForInterface(context: Context, item1: TSInterfaceDeclaration, item2: TSInterfaceDeclaration) {
-  for (const propertyA of item1.body.body) {
-    const samePropertyInInterfaceB = item2.body.body.find((propertyB) => context.getTextForCurrentSource(propertyB) ===  context.getTextForPrevSource(propertyA));
-    if (!samePropertyInInterfaceB) {
-      return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyA)} in interface ${item1.id.name}`);
+export function getPropertyDetailsErrorForInterface(context: Context, interfaceDeclarationInPrevCode: TSInterfaceDeclaration, interfaceDeclarationInCurrentCode: TSInterfaceDeclaration) {
+  for (const prevCodeInterfaceProperty of interfaceDeclarationInPrevCode.body.body) {
+    const samePropertyInPrevCodeInterface = interfaceDeclarationInCurrentCode.body.body.find((currentInterfaceProperty) => context.getTextForCurrentSource(currentInterfaceProperty) ===  context.getTextForPrevSource(prevCodeInterfaceProperty));
+    if (!samePropertyInPrevCodeInterface) {
+      return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(prevCodeInterfaceProperty)} in interface ${interfaceDeclarationInPrevCode.id.name}`);
     }
   }
 }

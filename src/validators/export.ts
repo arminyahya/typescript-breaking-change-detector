@@ -78,25 +78,25 @@ export type ExportDeclarationWithIdentifier =
 
 export function sameExportInBoth(
 	context: Context,
-  item1: ExportNamedDeclaration,
-  item2: AST<any>
+  exportDeclarationInPrevCode: ExportNamedDeclaration,
+  currentCode: AST<any>
 ) {
-  return item2.body.find((declarationB) => {
-    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration && declarationB.declaration.type === item1.declaration.type) {
+  return currentCode.body.find((declarationB) => {
+    if (declarationB.type === AST_NODE_TYPES.ExportNamedDeclaration && declarationB.declaration.type === exportDeclarationInPrevCode.declaration.type) {
       if (
-        item1.declaration.type === AST_NODE_TYPES.VariableDeclaration
+        exportDeclarationInPrevCode.declaration.type === AST_NODE_TYPES.VariableDeclaration
       ) {
-				return context.getTextForCurrentSource((declarationB as ExportNamedDeclaration).declaration) === context.getTextForPrevSource(item1.declaration);
+				return context.getTextForCurrentSource((declarationB as ExportNamedDeclaration).declaration) === context.getTextForPrevSource(exportDeclarationInPrevCode.declaration);
       } else if (
-        item1.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
+        exportDeclarationInPrevCode.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
       ) {
         // module declaration implementation is not yet complete
       } else {
         return (
           (
-            item1.declaration as unknown as ExportDeclarationWithIdentifier
+            exportDeclarationInPrevCode.declaration as unknown as ExportDeclarationWithIdentifier
           ).id.name ===
-          (item1.declaration as ExportDeclarationWithIdentifier).id.name
+          (exportDeclarationInPrevCode.declaration as ExportDeclarationWithIdentifier).id.name
         );
       }
     }

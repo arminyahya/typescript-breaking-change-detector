@@ -32,41 +32,41 @@ export function getIdExceptRangeAndLoc(node: BaseNode) {
 	return rest;
 }
 
-export function getSameTypeDeclaration(prevType, currentCode) {
+export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
 	return currentCode.body.find(
-    (declarationB) => {
-     return JSON.stringify(getIdExceptRangeAndLoc(declarationB.id)) === JSON.stringify(getIdExceptRangeAndLoc(prevType.id))
+    (declaration) => {
+     return JSON.stringify(getIdExceptRangeAndLoc(declaration.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
     }
   );
 }
 
-export function checkParamsBeSame(function1, function2) {
-  const function1Params = function1.typeAnnotation.typeAnnotation.params;
-  const function2Params = function2.typeAnnotation.typeAnnotation.params;
+export function checkParamsBeSame(functionInPrevCode, functionInCurrentCode) {
+  const prevFunctionParams = functionInPrevCode.typeAnnotation.typeAnnotation.params;
+  const currentFunctionParams = functionInCurrentCode.typeAnnotation.typeAnnotation.params;
+  return JSON.stringify(prevFunctionParams) === JSON.stringify(currentFunctionParams);
+}
+
+export function checkIfFunctionParametersAreValid(functionInPrevCode, functionInCurrentCode) {
+  const function1Params = functionInPrevCode.params;
+  const function2Params = functionInCurrentCode.params;
   return JSON.stringify(function1Params) === JSON.stringify(function2Params);
 }
 
-export function checkIfFunctionParametersAreValid(function1, function2) {
-  const function1Params = function1.params;
-  const function2Params = function2.params;
-  return JSON.stringify(function1Params) === JSON.stringify(function2Params);
+export function checkOptionalBeSame(itemInPrevCode, itemInCurrentCode) {
+  return itemInCurrentCode.optional !== itemInPrevCode.optional;
 }
 
-export function checkOptionalBeSame(item1, item2) {
-  return item2.optional !== item1.optional;
-}
-
-export function checkReturnTypeBeSame(item1, item2) {
+export function checkReturnTypeBeSame(itemInPrevCode, itemInCurrentCode) {
   return (
-    JSON.stringify(item2.typeAnnotation.typeAnnotation.returnType) ===
-    JSON.stringify(item1.typeAnnotation.typeAnnotation.returnType)
+    JSON.stringify(itemInCurrentCode.typeAnnotation.typeAnnotation.returnType) ===
+    JSON.stringify(itemInPrevCode.typeAnnotation.typeAnnotation.returnType)
   );
 }
 
-export function checkReturnTypeBeSameForTsDeclareFunction(item1, item2) {
+export function checkReturnTypeBeSameForTsDeclareFunction(itemInPrevCode, itemInCurrentCode) {
   return (
-    JSON.stringify(item2.returnType.typeAnnotation.type) ===
-    JSON.stringify(item1.returnType.typeAnnotation.type)
+    JSON.stringify(itemInCurrentCode.returnType.typeAnnotation.type) ===
+    JSON.stringify(itemInPrevCode.returnType.typeAnnotation.type)
   );
 }
 
@@ -87,35 +87,35 @@ export function throwValidatorError(error) {
 }
 
 export function getSameClassDeclaration(
-  item1: ClassDeclaration,
-  item2
+  classDeclarationInPrevCode: ClassDeclaration,
+  classDeclarationInCurrentCode
 ): ClassDeclaration {
-  return item2.body.find(
-    (declarationB) =>
-      declarationB.type === "ClassDeclaration" &&
-      declarationB.id.name === item1.id.name
+  return classDeclarationInCurrentCode.body.find(
+    (declaration) =>
+      declaration.type === "ClassDeclaration" &&
+      declaration.id.name === classDeclarationInPrevCode.id.name
   );
 }
 
 export function getSamePropertyForClass(
-  property,
-  classDeclaration: ClassDeclaration
+  propertyInPrevCode,
+  classDeclarationInCurrentCode: ClassDeclaration
 ) {
-  return classDeclaration.body.body.find(
+  return classDeclarationInCurrentCode.body.body.find(
     (item) =>
       item.type === AST_NODE_TYPES.PropertyDefinition &&
-      (item as any).key.name === property.key.name
+      (item as any).key.name === propertyInPrevCode.key.name
   );
 }
 
 export function getSameMethodForClass(
-  property,
-  classDeclaration: ClassDeclaration
+  propertyInPrevCode,
+  classDeclarationInCurrentCode: ClassDeclaration
 ) {
-  return classDeclaration.body.body.find(
+  return classDeclarationInCurrentCode.body.body.find(
     (item) =>
       item.type === AST_NODE_TYPES.MethodDefinition &&
-      (item as any).key.name === property.key.name
+      (item as any).key.name === propertyInPrevCode.key.name
   );
 }
 

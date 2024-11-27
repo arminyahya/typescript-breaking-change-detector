@@ -18,16 +18,16 @@ import {
 
 export default function TypeAliasValidator(
 	context,
-  prevType: TSTypeAliasDeclaration,
+  typeInPrevCode: TSTypeAliasDeclaration,
   currentCode
 ) {
-  const sameMemberInDeclarationB = getSameTypeDeclaration(prevType, currentCode);
+  const sameMemberInDeclarationB = getSameTypeDeclaration(typeInPrevCode, currentCode);
   if (!sameMemberInDeclarationB) {
-    return getErrorInfo(ALIASTYPE_REMOVED, prevType.id.name);
+    return getErrorInfo(ALIASTYPE_REMOVED, typeInPrevCode.id.name);
   }
   const propertyDetailsErrorTypeAlias = getPropertyDetailsErrorForTypeAlias(
 		context,
-    prevType,
+    typeInPrevCode,
     sameMemberInDeclarationB
   );
   if (propertyDetailsErrorTypeAlias) {
@@ -37,16 +37,16 @@ export default function TypeAliasValidator(
 
 export function getPropertyDetailsErrorForTypeAlias(
 	context,
-  type1: TSTypeAliasDeclaration,
-  type2: TSTypeAliasDeclaration
+  typeInPrevCode: TSTypeAliasDeclaration,
+  typeInCurrentCode: TSTypeAliasDeclaration
 ) {
   if (
-    JSON.stringify(type1.typeAnnotation) !==
-    JSON.stringify(type2.typeAnnotation)
+    JSON.stringify(typeInPrevCode.typeAnnotation) !==
+    JSON.stringify(typeInCurrentCode.typeAnnotation)
   ) {
       return getErrorInfo(
         PROPERTY_CHANGED,
-        `property changed in type ${type1.id.name}`
+        `property changed in type ${typeInPrevCode.id.name}`
       );
   }
 }

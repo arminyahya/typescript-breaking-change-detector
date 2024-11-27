@@ -31,11 +31,11 @@ export default function variableValidator(
 }
 
 export function getVariableDetailError(
-  item1: VariableDeclaration,
-  item2: VariableDeclaration
+  variableDeclarationInPrevCode: VariableDeclaration,
+  variableDeclarationInCurrentCode: VariableDeclaration
 ) {
-  for (const propertyA of item1.declarations) {
-    const samePropertyInVarB = item2.declarations.find(
+  for (const propertyA of variableDeclarationInPrevCode.declarations) {
+    const samePropertyInVarB = variableDeclarationInCurrentCode.declarations.find(
       (propertyB) => propertyB === propertyA
     );
     if (!samePropertyInVarB) {
