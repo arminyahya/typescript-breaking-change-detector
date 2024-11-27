@@ -11,15 +11,15 @@ import { Context, getErrorInfo } from "../helper";
 
 export default function variableValidator(
 	context: Context,
-  var1: VariableDeclaration,
-  codeB: AST<any>
+  prevVar: VariableDeclaration,
+  currentCode: AST<any>
 ) {
-  for (const declaration of var1.declarations) {
+  for (const declaration of prevVar.declarations) {
     if (declaration.id.type === "Identifier") {
-      const sameVariableInCodeB = codeB.body.find((node) => {
+      const sameVariableInCodeB = currentCode.body.find((node) => {
         if (node.type === "VariableDeclaration") {
           for (const declaration2 of node.declarations) {
-            return context.getTextForCurrentSource(declaration2)  === context.getTextForPrevSource(declaration);
+            return context.getTextForCurrentSource(declaration2 as unknown as VariableDeclaration)  === context.getTextForPrevSource(declaration);
           }
         }
       });

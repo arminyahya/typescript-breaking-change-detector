@@ -13,8 +13,8 @@ import {
   objectToFormatedString,
 } from "../helper";
 
-export default function propertyValidator(context, property, codeB) {
-  const sameProperty = getSameProperty(property, codeB);
+export default function propertyValidator(context, property, currentCode) {
+  const sameProperty = getSameProperty(property, currentCode);
   if (!sameProperty) {
     return getErrorInfo(
       PROPERTY_REMOVED,

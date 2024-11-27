@@ -18,16 +18,16 @@ import {
 
 export default function TypeAliasValidator(
 	context,
-  type1: TSTypeAliasDeclaration,
-  codeB
+  prevType: TSTypeAliasDeclaration,
+  currentCode
 ) {
-  const sameMemberInDeclarationB = getSameTypeDeclaration(type1, codeB);
+  const sameMemberInDeclarationB = getSameTypeDeclaration(prevType, currentCode);
   if (!sameMemberInDeclarationB) {
-    return getErrorInfo(ALIASTYPE_REMOVED, type1.id.name);
+    return getErrorInfo(ALIASTYPE_REMOVED, prevType.id.name);
   }
   const propertyDetailsErrorTypeAlias = getPropertyDetailsErrorForTypeAlias(
 		context,
-    type1,
+    prevType,
     sameMemberInDeclarationB
   );
   if (propertyDetailsErrorTypeAlias) {

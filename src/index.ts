@@ -10,32 +10,32 @@ import moduleValidator from "./validators/module";
 import variableValidator from "./validators/variableValidator";
 import chalk from "chalk";
 
-export default function isNewDeclarationValid(context: Context , codeA: AST<any>, codeB: AST<any>) {
+export default function isNewDeclarationValid(context: Context , prevCode: AST<any>, currentCode: AST<any>) {
   try {
-    for (const declarationA of codeA.body) {
-      switch (declarationA.type as keyof typeof AST_NODE_TYPES) {
+    for (const declarationInPrevCode of prevCode.body) {
+      switch (declarationInPrevCode.type as keyof typeof AST_NODE_TYPES) {
         case AST_NODE_TYPES.ExportNamedDeclaration:
           throwValidatorError(
-            ExportValidator(context, declarationA as ExportNamedDeclaration, codeB)
+            ExportValidator(context, declarationInPrevCode as ExportNamedDeclaration, currentCode)
           );
           break;
         case AST_NODE_TYPES.TSInterfaceDeclaration:
-          throwValidatorError(InterfaceValidator(context, declarationA as TSInterfaceDeclaration, codeB));
+          throwValidatorError(InterfaceValidator(context, declarationInPrevCode as TSInterfaceDeclaration, currentCode));
           break;
         case AST_NODE_TYPES.TSTypeAliasDeclaration:
-          throwValidatorError(TypeAliasValidator(context, declarationA as TSTypeAliasDeclaration, codeB));
+          throwValidatorError(TypeAliasValidator(context, declarationInPrevCode as TSTypeAliasDeclaration, currentCode));
           break;
         case AST_NODE_TYPES.TSPropertySignature:
-          throwValidatorError(propertyValidator(context, declarationA, codeB));
+          throwValidatorError(propertyValidator(context, declarationInPrevCode, currentCode));
           break;
         case AST_NODE_TYPES.FunctionDeclaration:
-          throwValidatorError(tsDeclareFunctionValidator(context, declarationA, codeB));
+          throwValidatorError(tsDeclareFunctionValidator(context, declarationInPrevCode, currentCode));
           break;
         case AST_NODE_TYPES.TSModuleDeclaration:
-          throwValidatorError(moduleValidator(context, declarationA as TSModuleDeclaration, codeB));
+          throwValidatorError(moduleValidator(context, declarationInPrevCode as TSModuleDeclaration, currentCode));
           break;
         case AST_NODE_TYPES.VariableDeclaration:
-          throwValidatorError(variableValidator(context, declarationA as VariableDeclaration, codeB));
+          throwValidatorError(variableValidator(context, declarationInPrevCode as VariableDeclaration, currentCode));
           break;
         default:
           break;

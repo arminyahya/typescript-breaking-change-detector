@@ -7,12 +7,12 @@ import {
   TSEnumMemberNonComputedName,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 
-export default function EnumValidator( context ,enum1: TSEnumDeclaration, codeB) {
-  const sameEnumInDeclarationB = getSameTypeDeclaration(enum1, codeB);
+export default function EnumValidator( context ,prevEnum: TSEnumDeclaration, currentCode) {
+  const sameEnumInDeclarationB = getSameTypeDeclaration(prevEnum, currentCode);
   if (!sameEnumInDeclarationB) {
     return getErrorInfo(ENUM_REMOVED, sameEnumInDeclarationB.id.name);
   }
-  return checkAllPrevEnumMembersExist( context ,enum1, sameEnumInDeclarationB);
+  return checkAllPrevEnumMembersExist( context ,prevEnum, sameEnumInDeclarationB);
 }
 
 export function checkAllPrevEnumMembersExist(

@@ -23,22 +23,22 @@ import { AST } from "@typescript-eslint/typescript-estree";
 
 export default function ExportValidator(
 	context: Context,
-  exportA: ExportNamedDeclaration,
-  codeB: AST<any>
+  exportDelarationInPrevCode: ExportNamedDeclaration,
+  currentCode: AST<any>
 ) {
-  const sameExport= sameExportInBoth(context, exportA, codeB);
+  const sameExport= sameExportInBoth(context, exportDelarationInPrevCode, currentCode);
   if (!sameExport) {
-    return getErrorInfo(EXPORT_REMOVED, context.getTextForPrevSource(exportA.declaration));
+    return getErrorInfo(EXPORT_REMOVED, context.getTextForPrevSource(exportDelarationInPrevCode.declaration));
   } else {
-    switch (exportA.declaration.type as keyof typeof AST_NODE_TYPES) {
+    switch (exportDelarationInPrevCode.declaration.type as keyof typeof AST_NODE_TYPES) {
       case AST_NODE_TYPES.ClassDeclaration:
-				return getClassPropertyDetailError(context,exportA.declaration as ClassDeclaration, (sameExport as ExportNamedDeclaration).declaration as ClassDeclaration)
+				return getClassPropertyDetailError(context,exportDelarationInPrevCode.declaration as ClassDeclaration, (sameExport as ExportNamedDeclaration).declaration as ClassDeclaration)
       case AST_NODE_TYPES.ClassExpression:
         break;
 			case AST_NODE_TYPES.TSDeclareFunction:
-				return getFunctionDetailsError(context, exportA.declaration as TSDeclareFunction, (sameExport as ExportNamedDeclaration).declaration)
+				return getFunctionDetailsError(context, exportDelarationInPrevCode.declaration as TSDeclareFunction, (sameExport as ExportNamedDeclaration).declaration)
       case AST_NODE_TYPES.TSEnumDeclaration:
-				return checkAllPrevEnumMembersExist(context, exportA.declaration as TSEnumDeclaration, (sameExport as ExportNamedDeclaration).declaration as TSEnumDeclaration)
+				return checkAllPrevEnumMembersExist(context, exportDelarationInPrevCode.declaration as TSEnumDeclaration, (sameExport as ExportNamedDeclaration).declaration as TSEnumDeclaration)
       case AST_NODE_TYPES.TSModuleDeclaration:
         break;
       case AST_NODE_TYPES.VariableDeclaration:
@@ -47,14 +47,14 @@ export default function ExportValidator(
       case AST_NODE_TYPES.TSInterfaceDeclaration:
 				return getPropertyDetailsErrorForInterface(
 					context,
-					exportA.declaration as TSInterfaceDeclaration ,
+					exportDelarationInPrevCode.declaration as TSInterfaceDeclaration ,
 					(sameExport as ExportNamedDeclaration).declaration as TSInterfaceDeclaration
 				);
         break;
       case AST_NODE_TYPES.TSTypeAliasDeclaration:
 				return getPropertyDetailsErrorForTypeAlias(
 					context,
-					exportA.declaration as TSTypeAliasDeclaration ,
+					exportDelarationInPrevCode.declaration as TSTypeAliasDeclaration ,
 					(sameExport as ExportNamedDeclaration).declaration as TSTypeAliasDeclaration
 				);
         break;
@@ -86,7 +86,7 @@ export function sameExportInBoth(
       if (
         item1.declaration.type === AST_NODE_TYPES.VariableDeclaration
       ) {
-				return context.getTextForCurrentSource(declarationB.declaration) === context.getTextForPrevSource(item1.declaration);
+				return context.getTextForCurrentSource((declarationB as ExportNamedDeclaration).declaration) === context.getTextForPrevSource(item1.declaration);
       } else if (
         item1.declaration.type === AST_NODE_TYPES.TSModuleDeclaration
       ) {

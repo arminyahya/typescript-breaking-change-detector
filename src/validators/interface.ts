@@ -12,17 +12,17 @@ import {
 
 import {TSInterfaceDeclaration, TSCallSignatureDeclaration, TSPropertySignature, TSConstructSignatureDeclaration, TSMethodSignature} from "@typescript-eslint/types/dist/generated/ast-spec";
 
-export default function InterfaceValidator(context: Context, interface1: TSInterfaceDeclaration, codeB ) {
+export default function InterfaceValidator(context: Context, prevInterface: TSInterfaceDeclaration, currentCode ) {
   const sameInterfaceInDeclarationB = getSameTypeDeclaration(
-    interface1,
-    codeB
+    prevInterface,
+    currentCode
   );
   if (!sameInterfaceInDeclarationB) {
-    return getErrorInfo(INTERFACE_REMOVED, interface1.id.name);
+    return getErrorInfo(INTERFACE_REMOVED, prevInterface.id.name);
   }
   const propertyDetailsError = getPropertyDetailsErrorForInterface(
 		context,
-    interface1,
+    prevInterface,
     sameInterfaceInDeclarationB,
   );
   return propertyDetailsError;

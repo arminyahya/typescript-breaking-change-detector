@@ -32,10 +32,11 @@ export function getIdExceptRangeAndLoc(node: BaseNode) {
 	return rest;
 }
 
-export function getSameTypeDeclaration(item1, item2) {
-	return item2.body.find(
-    (declarationB) =>
-      JSON.stringify(getIdExceptRangeAndLoc(declarationB.id)) === JSON.stringify(getIdExceptRangeAndLoc(item1.id))
+export function getSameTypeDeclaration(prevType, currentCode) {
+	return currentCode.body.find(
+    (declarationB) => {
+     return JSON.stringify(getIdExceptRangeAndLoc(declarationB.id)) === JSON.stringify(getIdExceptRangeAndLoc(prevType.id))
+    }
   );
 }
 
@@ -45,7 +46,7 @@ export function checkParamsBeSame(function1, function2) {
   return JSON.stringify(function1Params) === JSON.stringify(function2Params);
 }
 
-export function checkParamsBeSameForTsDeclare(function1, function2) {
+export function checkIfFunctionParametersAreValid(function1, function2) {
   const function1Params = function1.params;
   const function2Params = function2.params;
   return JSON.stringify(function1Params) === JSON.stringify(function2Params);
