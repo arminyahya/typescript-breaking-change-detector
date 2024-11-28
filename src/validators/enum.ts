@@ -20,6 +20,7 @@ export function checkAllPrevEnumMembersExist(
   enumDeclarationInPrevCode: TSEnumDeclaration,
   enumDeclarationInCurrentCode: TSEnumDeclaration
 ) {
+  // TODO: I think this is wrong
   if (JSON.stringify(enumDeclarationInPrevCode.members) !== JSON.stringify(enumDeclarationInCurrentCode.members)) {
     return getErrorInfo(
       ENUM_MEMBERS_CHANGED,

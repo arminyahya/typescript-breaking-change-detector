@@ -7,6 +7,7 @@ import {
   RETURN_TYPE_CHANGED,
 } from "../constants/errors";
 import {
+  checkIfFunctionParametersAreValid,
   checkOptionalBeSame,
   checkParamsBeSame,
   checkReturnTypeBeSame,
@@ -17,7 +18,7 @@ import {
 } from "../helper";
 
 export default function TypeAliasValidator(
-	context,
+  context,
   typeInPrevCode: TSTypeAliasDeclaration,
   currentCode
 ) {
@@ -26,7 +27,7 @@ export default function TypeAliasValidator(
     return getErrorInfo(ALIASTYPE_REMOVED, typeInPrevCode.id.name);
   }
   const propertyDetailsErrorTypeAlias = getPropertyDetailsErrorForTypeAlias(
-		context,
+    context,
     typeInPrevCode,
     sameMemberInDeclarationB
   );
@@ -36,17 +37,31 @@ export default function TypeAliasValidator(
 }
 
 export function getPropertyDetailsErrorForTypeAlias(
-	context,
-  typeInPrevCode: TSTypeAliasDeclaration,
-  typeInCurrentCode: TSTypeAliasDeclaration
+  context,
+  typeInPrevCode,
+  typeInCurrentCode
 ) {
-  if (
-    JSON.stringify(typeInPrevCode.typeAnnotation) !==
-    JSON.stringify(typeInCurrentCode.typeAnnotation)
-  ) {
+  for (let member of typeInPrevCode.typeAnnotation.members) {
+    const sameMemberInCurrentCode = typeInCurrentCode.typeAnnotation.members.find(m => m.key.name === member.key.name);
+    if (!sameMemberInCurrentCode) {
       return getErrorInfo(
         PROPERTY_CHANGED,
         `property changed in type ${typeInPrevCode.id.name}`
       );
+    } else {
+      switch (member.typeAnnotation.typeAnnotation.type) {
+        case 'TSFunctionType':
+          const valid = checkIfFunctionParametersAreValid(member.typeAnnotation.typeAnnotation, sameMemberInCurrentCode.typeAnnotation.typeAnnotation);
+          if (!valid) {
+            return getErrorInfo(
+              PROPERTY_CHANGED,
+              `function parameter changed in type ${typeInPrevCode.id.name}`
+            );
+          }
+        /* other cases need to implement */
+      }
+    }
   }
+  console.log('null');
+  return null;
 }

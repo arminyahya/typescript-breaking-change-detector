@@ -153,7 +153,21 @@ export type A = {
 }
 `,
     PROPERTY_CHANGED,
-    "property changed in type A"
+    "function parameter changed in type A"
+  );
+
+  testRunner(
+    "function arg inside alias type changed but it won't break",
+    `
+		export type A = {
+			calcTotal: (a: number, b: number) => number;
+		}
+`,
+    `
+export type A = {
+	calcTotal: (a: number, b:number, c?:number) => number;
+}
+`,
   );
 
   testRunner(

@@ -36,11 +36,13 @@ export function getIdExceptRangeAndLoc(node: BaseNode) {
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
 	return currentCode.body.find(
     (statement) => {
+  // TODO: I think this is wrong
      return JSON.stringify(getIdExceptRangeAndLoc(statement.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
     }
   );
 }
 
+// TODO: add optional consideration
 export function checkParamsBeSame(functionInPrevCode, functionInCurrentCode) {
   const prevFunctionParams = functionInPrevCode.typeAnnotation.typeAnnotation.params;
   const currentFunctionParams = functionInCurrentCode.typeAnnotation.typeAnnotation.params;
@@ -135,6 +137,7 @@ export function getSameMethodForClass(
   );
 }
 
+//TODO I'm not sure about this
 export function checkPropertyBeSame(property1, property2) {
   return JSON.stringify(property1) === JSON.stringify(property2);
 }
