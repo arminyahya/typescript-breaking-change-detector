@@ -29,40 +29,33 @@ import { FunctionExpression, FunctionTypeNode } from "typescript";
 
 
 export function getIdExceptRangeAndLoc(node: BaseNode) {
-	const { range, loc, ...rest } = node;
-	return rest;
+  const { range, loc, ...rest } = node;
+  return rest;
 }
 
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
-	return currentCode.body.find(
+  return currentCode.body.find(
     (statement) => {
-  // TODO: I think this is wrong
-     return JSON.stringify(getIdExceptRangeAndLoc(statement.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
+      return JSON.stringify(getIdExceptRangeAndLoc(statement.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
     }
   );
 }
 
-// TODO: add optional consideration
-export function checkParamsBeSame(functionInPrevCode, functionInCurrentCode) {
-  const prevFunctionParams = functionInPrevCode.typeAnnotation.typeAnnotation.params;
-  const currentFunctionParams = functionInCurrentCode.typeAnnotation.typeAnnotation.params;
-  return JSON.stringify(prevFunctionParams) === JSON.stringify(currentFunctionParams);
-}
 
 export function checkIfFunctionParametersAreValid(functionInPrevCode, functionInCurrentCode) {
-  if(functionInCurrentCode.params.length < functionInPrevCode.params.length) {
+  if (functionInCurrentCode.params.length < functionInPrevCode.params.length) {
     return false;
   }
-  
-  for(let pIndex in functionInCurrentCode.params) {
+
+  for (let pIndex in functionInCurrentCode.params) {
     const param = functionInCurrentCode.params[pIndex];
     const paramInPrevCode = functionInPrevCode.params[pIndex];
-    if(paramInPrevCode) {
-      if(paramInPrevCode.optional && !param.optional) {
+    if (paramInPrevCode) {
+      if (paramInPrevCode.optional && !param.optional) {
         return false
       }
     } else {
-      if(!param.optional) {
+      if (!param.optional) {
         return false
       }
     }
@@ -137,9 +130,14 @@ export function getSameMethodForClass(
   );
 }
 
-//TODO I'm not sure about this
-export function checkPropertyBeSame(property1, property2) {
-  return JSON.stringify(property1) === JSON.stringify(property2);
+export function checkClassPropertyBeTheSame(property1, property2) {
+  switch (property1.type) {
+    case 'PropertyDefinition':
+      return property1.typeAnnotation.typeAnnotation.type === property2.typeAnnotation.typeAnnotation.type
+    case 'MethodDefinition':
+      return checkIfFunctionParametersAreValid(property1.value, property2.value) && property1.value.returnType.type === property2.value.returnType.type;
+  }
+  return true
 }
 
 export function getErrorInfo(type, info) {
@@ -166,7 +164,7 @@ export function pareCode(code: string) {
     loc: true,
     range: true,
   });
-	return parsedCode;
+  return parsedCode;
 }
 
 export function generateContext(prevCode: string, currentCode: string): Context {
@@ -175,7 +173,7 @@ export function generateContext(prevCode: string, currentCode: string): Context 
       const sourceCode = new SourceCode(prevCode);
       return sourceCode.getText(node, null, null);
     },
-		getTextForCurrentSource: (node) => {
+    getTextForCurrentSource: (node) => {
       const sourceCode = new SourceCode(currentCode);
       return sourceCode.getText(node, null, null);
     },

@@ -9,7 +9,6 @@ import {
 import {
   checkIfFunctionParametersAreValid,
   checkOptionalBeSame,
-  checkParamsBeSame,
   checkReturnTypeBeSame,
   getErrorInfo,
   getSameTypeDeclaration,

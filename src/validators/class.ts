@@ -9,7 +9,7 @@ import {
   PROPERTY_CHANGED,
 } from "../constants/errors";
 import {
-  checkPropertyBeSame,
+  checkClassPropertyBeTheSame,
   Context,
   getErrorInfo,
   getSameClassDeclaration,
@@ -48,7 +48,7 @@ export function getClassPropertyDetailError(
           return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
         }
 
-        if (!checkPropertyBeSame(propertyInPrevCode, samePropertyInOtherClass)) {
+        if (!checkClassPropertyBeTheSame(propertyInPrevCode, samePropertyInOtherClass)) {
           return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
         }
         break;
@@ -63,7 +63,7 @@ export function getClassPropertyDetailError(
             return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
           }
 
-          if (!checkPropertyBeSame(propertyInPrevCode, sameMehodInOtherClass)) {
+          if (!checkClassPropertyBeTheSame(propertyInPrevCode, sameMehodInOtherClass)) {
             return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
           }
         }
