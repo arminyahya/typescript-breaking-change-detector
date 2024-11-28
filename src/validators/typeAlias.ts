@@ -60,6 +60,5 @@ export function getPropertyDetailsErrorForTypeAlias(
       }
     }
   }
-  console.log('null');
   return null;
 }
