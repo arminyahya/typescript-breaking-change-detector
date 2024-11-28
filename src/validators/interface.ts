@@ -1,7 +1,6 @@
 import { FUNCTION_PARAMETER_CHANGED, INTERFACE_REMOVED, OPTIONAL_CHANGED, PROPERTY_CHANGED, RETURN_TYPE_CHANGED } from "../constants/errors";
 import {
 	checkOptionalBeSame,
-	checkReturnTypeBeSame,
 	Context,
 	getErrorInfo,
   getSameTypeDeclaration,

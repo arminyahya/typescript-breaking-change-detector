@@ -67,13 +67,6 @@ export function checkOptionalBeSame(itemInPrevCode, itemInCurrentCode) {
   return itemInCurrentCode.optional !== itemInPrevCode.optional;
 }
 
-export function checkReturnTypeBeSame(itemInPrevCode, itemInCurrentCode) {
-  return (
-    JSON.stringify(itemInCurrentCode.typeAnnotation.typeAnnotation.returnType) ===
-    JSON.stringify(itemInPrevCode.typeAnnotation.typeAnnotation.returnType)
-  );
-}
-
 export function checkReturnTypeBeSameForTsDeclareFunction(itemInPrevCode, itemInCurrentCode) {
   return (
     JSON.stringify(itemInCurrentCode.returnType.typeAnnotation.type) ===

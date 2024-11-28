@@ -6,7 +6,6 @@ import {
 } from "../constants/errors";
 import {
   checkOptionalBeSame,
-  checkReturnTypeBeSame,
   getErrorInfo,
   getSameProperty,
   isPropertyFunction,
