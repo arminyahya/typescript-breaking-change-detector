@@ -9,16 +9,18 @@ function getTwoParsedCodeAndContext(code1: string, code2: string) {
   return { context, parsedPrevCode, parsedCurrentCode };
 }
 
-export default function testRunner(name, prevCode, currentCode, errorType, errorMessage) {
+export default function testRunner(name, prevCode, currentCode, errorType?, errorMessage?) {
 	test(name, () => {
     const { context, parsedPrevCode, parsedCurrentCode } = getTwoParsedCodeAndContext(
       prevCode,
       currentCode
     );
     const {isValid, info} = isNewDeclarationValid(context, parsedPrevCode, parsedCurrentCode);
-		expect(isValid).toBe(false);
-    expect(info.replace(/\s/g, "")).toContain(
-			chalk.red("Error: " + getErrorInfo(errorType, errorMessage)).replace(/\s/g, "")
-    );
+		expect(isValid).toBe(errorType ? false : true);
+    if(errorType) {
+      expect(info.replace(/\s/g, "")).toContain(
+        chalk.red("Error: " + getErrorInfo(errorType, errorMessage)).replace(/\s/g, "")
+      );
+    }
   });
 }
