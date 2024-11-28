@@ -216,7 +216,7 @@ export class MyMath {
     CLASS_METHOD_REMOVED,
     "method calc(a: number,b: number): void; in class MyMath"
   );
-  ``
+  
   testRunner(
     "Class method changed",
     `
@@ -272,7 +272,7 @@ export class MyMath {
   );
 
   testRunner(
-    "Optional parameter added to function",
+    "Optional parameter added to the function",
     `
 		export function MyMath(a: number, b:number): number;
 	`,
