@@ -20,6 +20,7 @@ export default function propertyValidator(context, propertyInPrevCode, currentCo
       PROPERTY_REMOVED,
       `property ${context.getTextForPrevSource(propertyInPrevCode)}`
     );
+    
   } else if ( context.getTextForPrevSource(propertyInPrevCode) !== context.getTextForCurrentSource(samePropertyInCurrentCode)) {
     return getErrorInfo(
       OPTIONAL_CHANGED,

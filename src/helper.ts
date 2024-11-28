@@ -25,6 +25,7 @@ import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/
 import chalk from "chalk";
 import { parse } from "@typescript-eslint/typescript-estree";
 import SourceCode from "./sourcecode";
+import { FunctionExpression, FunctionTypeNode } from "typescript";
 
 
 export function getIdExceptRangeAndLoc(node: BaseNode) {
@@ -47,9 +48,24 @@ export function checkParamsBeSame(functionInPrevCode, functionInCurrentCode) {
 }
 
 export function checkIfFunctionParametersAreValid(functionInPrevCode, functionInCurrentCode) {
-  const function1Params = functionInPrevCode.params;
-  const function2Params = functionInCurrentCode.params;
-  return JSON.stringify(function1Params) === JSON.stringify(function2Params);
+  if(functionInCurrentCode.params.length < functionInPrevCode.params.length) {
+    return false;
+  }
+  
+  for(let pIndex in functionInCurrentCode.params) {
+    const param = functionInCurrentCode.params[pIndex];
+    const paramInPrevCode = functionInPrevCode.params[pIndex];
+    if(paramInPrevCode) {
+      if(paramInPrevCode.optional && !param.optional) {
+        return false
+      }
+    } else {
+      if(!param.optional) {
+        return false
+      }
+    }
+  }
+  return true
 }
 
 export function checkOptionalBeSame(itemInPrevCode, itemInCurrentCode) {
