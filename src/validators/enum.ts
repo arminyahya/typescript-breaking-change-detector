@@ -20,10 +20,15 @@ export function checkAllPrevEnumMembersExist(
   enumDeclarationInPrevCode: TSEnumDeclaration,
   enumDeclarationInCurrentCode: TSEnumDeclaration
 ) {
-  if (JSON.stringify(enumDeclarationInPrevCode.members) !== JSON.stringify(enumDeclarationInCurrentCode.members)) {
-    return getErrorInfo(
-      ENUM_MEMBERS_CHANGED,
-      `look at members of ${enumDeclarationInPrevCode.id.name}`
-    );
+  for(let mIndex in enumDeclarationInPrevCode.members) {
+    const member = enumDeclarationInPrevCode.members[mIndex];
+    if(!enumDeclarationInCurrentCode.members.find(m => (m.id as Identifier).name === (member.id as Identifier).name)) {
+      if (JSON.stringify(enumDeclarationInPrevCode.members) !== JSON.stringify(enumDeclarationInCurrentCode.members)) {
+        return getErrorInfo(
+          ENUM_MEMBERS_CHANGED,
+          `look at members of ${enumDeclarationInPrevCode.id.name}`
+        );
+      }
+    }
   }
 }

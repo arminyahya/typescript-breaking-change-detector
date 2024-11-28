@@ -153,7 +153,21 @@ export type A = {
 }
 `,
     PROPERTY_CHANGED,
-    "property changed in type A"
+    "function parameter changed in type A"
+  );
+
+  testRunner(
+    "function arg inside alias type changed but it won't break",
+    `
+		export type A = {
+			calcTotal: (a: number, b: number) => number;
+		}
+`,
+    `
+export type A = {
+	calcTotal: (a: number, b:number, c?:number) => number;
+}
+`,
   );
 
   testRunner(
@@ -202,7 +216,7 @@ export class MyMath {
     CLASS_METHOD_REMOVED,
     "method calc(a: number,b: number): void; in class MyMath"
   );
-
+  
   testRunner(
     "Class method changed",
     `
@@ -219,6 +233,20 @@ export class MyMath {
     "method calc(a: number,b: number): void; in class MyMath"
   );
 
+  
+  testRunner(
+    "Class method changed but wont break",
+    `
+		export class MyMath {
+			calc(a: number,b: number): void;
+		}
+`,
+    `
+export class MyMath {
+	calc(a: number,b: number, c?:number): void;
+}
+`,
+  );
   testRunner(
     "Function return type changed",
     `
@@ -241,6 +269,16 @@ export class MyMath {
 	`,
     FUNCTION_PARAMETER_CHANGED,
     "function MyMath(a: number, b:number): number;"
+  );
+
+  testRunner(
+    "Optional parameter added to the function",
+    `
+		export function MyMath(a: number, b:number): number;
+	`,
+    `
+	export function MyMath(a: number, b:number, c?:number): number;
+	`
   );
 
   testRunner(
