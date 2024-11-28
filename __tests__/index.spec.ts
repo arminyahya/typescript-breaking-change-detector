@@ -216,7 +216,7 @@ export class MyMath {
     CLASS_METHOD_REMOVED,
     "method calc(a: number,b: number): void; in class MyMath"
   );
-
+  ``
   testRunner(
     "Class method changed",
     `
@@ -233,6 +233,20 @@ export class MyMath {
     "method calc(a: number,b: number): void; in class MyMath"
   );
 
+  
+  testRunner(
+    "Class method changed but wont break",
+    `
+		export class MyMath {
+			calc(a: number,b: number): void;
+		}
+`,
+    `
+export class MyMath {
+	calc(a: number,b: number, c?:number): void;
+}
+`,
+  );
   testRunner(
     "Function return type changed",
     `
