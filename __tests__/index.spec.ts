@@ -244,6 +244,16 @@ export class MyMath {
   );
 
   testRunner(
+    "Optional parameter added to function",
+    `
+		export function MyMath(a: number, b:number): number;
+	`,
+    `
+	export function MyMath(a: number, b:number, c?:number): number;
+	`
+  );
+
+  testRunner(
     "Enum member removed",
     `
 		export enum MyEnum {
