@@ -18,7 +18,7 @@ export default function testRunner(name, prevCode, currentCode, errorType?, erro
     );
     const {isValid, info} = isNewDeclarationValid(context, parsedPrevCode, parsedCurrentCode);
 		expect(isValid).toBe(errorType ? false : true);
-    if(errorType) {
+    if(info) {
       expect(info.replace(/\s/g, "")).toContain(
         chalk.red("Error: " + getErrorInfo(errorType, errorMessage)).replace(/\s/g, "")
       );
