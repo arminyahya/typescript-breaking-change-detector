@@ -9,8 +9,9 @@ function getTwoParsedCodeAndContext(code1: string, code2: string) {
   return { context, parsedPrevCode, parsedCurrentCode };
 }
 
-export default function testRunner(name, prevCode, currentCode, errorType?, errorMessage?) {
-	test(name, () => {
+export default function testRunner(name, prevCode, currentCode, errorType?, errorMessage?, only?) {
+  const testFn = only ? test.only : test;
+    testFn(name, () => {
     const { context, parsedPrevCode, parsedCurrentCode } = getTwoParsedCodeAndContext(
       prevCode,
       currentCode
