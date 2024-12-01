@@ -16,7 +16,6 @@ import {
 import {
   generateContext,
   getErrorInfo,
-  inValidDeclareErrorForTest,
   pareCode,
 } from "../src/helper";
 import SourceCode from "../src/sourcecode";
@@ -105,6 +104,45 @@ export interface A {
   );
 
   testRunner(
+    "Not exported interface property return type change",
+    `
+		interface A {
+			getAge: () => number;
+			name: string;
+			age: number;
+		}
+`,
+    `
+interface A {
+	getAge: () => string;
+	age: number;
+	name: string;
+}
+`,
+    PROPERTY_CHANGED,
+    "property getAge: () => number; in interface A"
+  );
+
+  testRunner(
+    "Not exported interface changes is not breaking",
+    `
+		interface A {
+			getAge: () => number;
+			name: string;
+			age: number;
+		}
+`,
+    `
+interface A {
+	getAge: () => number;
+	age: number;
+	name: string;
+  address?: string;
+}
+`,
+  );
+
+  testRunner(
     "Property optional changed",
     `
 		export interface A {
@@ -154,6 +192,36 @@ export type A = {
 `,
     PROPERTY_CHANGED,
     "function parameter changed in type A"
+  );
+
+  testRunner(
+    "Not exported alias type property parameters changed",
+    `
+		type A = {
+			calcTotal: (a: number, b: number) => number;
+		}
+`,
+    `
+type A = {
+	calcTotal: (a: number) => number;
+}
+`,
+    PROPERTY_CHANGED,
+    "function parameter changed in type A"
+  );
+
+  testRunner(
+    "Not exported alias type changed but is not breaking",
+    `
+		type A = {
+			calcTotal: (a: number, b: number) => number;
+		}
+`,
+    `
+type A = {
+	calcTotal: (a: number, b:number, c?:number) => number;
+}
+`,
   );
 
   testRunner(
@@ -216,7 +284,7 @@ export class MyMath {
     PROPERTY_REMOVED,
     "Property or method calc(a: number,b: number): void; is missing in MyMath"
   );
-  
+
   testRunner(
     "Class method changed",
     `
@@ -233,7 +301,7 @@ export class MyMath {
     "Property or method calc(a: number,b: number): void; has changed in MyMath"
   );
 
-  
+
   testRunner(
     "Class method changed but wont break",
     `
@@ -297,45 +365,42 @@ export class MyMath {
     "look at members of MyEnum"
   );
 
-  test("Module removed", () => {
-    const codeA = `
-		module "myModule" {
+
+  testRunner(
+    "Module removed",
+    `
+    module "myModule" {
 			const content: string;
 			export default content;
 		}
-	`;
-    const codeB = `
-		`;
+	`,
+    ``,
+    MODULE_REMOVED,
+    `module "myModule"`
 
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    const { isValid, info } = fn();
-    expect(isValid).toBe(false);
-    expect(info).toContain(
-      "Error: " + MODULE_REMOVED + " - " + 'module "myModule"'
-    );
-  });
+  );
 
-  test("Variable removed", () => {
-    const codeA = `
-		export var myVar: number;
-	`;
-    const codeB = `
-		export var mmd: number;
-		`;
+  
+  testRunner(
+    "Module changed but is not breaking",
+    `
+    module "myModule" {
+			const content: string;
 
-    const { context, parsedCode1, parsedCode2 } = getTwoParsedCodeAndContext(
-      codeA,
-      codeB
-    );
-    const fn = () => isNewDeclarationValid(context, parsedCode1, parsedCode2);
-    expect(fn()).toMatchObject(
-      inValidDeclareErrorForTest(EXPORT_REMOVED, "var myVar: number;")
-    );
-  });
+			export default content;
+		}
+	`,
+    `
+    module "myModule" {
+			const content: string;
+			const content2: string;
+
+			export default content;
+		}
+      `
+
+  );
+
 
   testRunner(
     "Variable type changed",
@@ -349,28 +414,38 @@ export class MyMath {
     "myVar: number"
   );
 
-testRunner(
-  "Union type member removed",
-  `
+  testRunner(
+    "Variable type changed but its not breaking",
+    `
+	var myVar: number;
+	`,
+    `
+	var myVar: number | string;
+	`,
+  );
+
+  testRunner(
+    "Union type member removed",
+    `
   export type MyUnion = "a" | "b" | "c";
   `,
-  `
+    `
   export type MyUnion = "a" | "b";
   `,
-  PROPERTY_CHANGED,
-  `Member "c" is missing in type MyUnion`,
-);
+    PROPERTY_CHANGED,
+    `Member "c" is missing in type MyUnion`,
+  );
 
-testRunner(
-  "Intersection Type Member Added",
-  `
+  testRunner(
+    "Intersection Type Member Added",
+    `
   export type MyIntersection = A & B;
   `,
-  `
+    `
   export type MyIntersection = A & B & C;
   `,
-  PROPERTY_CHANGED,
-`New member was added to type MyIntersection`,
-)
+    PROPERTY_CHANGED,
+    `New member was added to type MyIntersection`,
+  )
 
 });

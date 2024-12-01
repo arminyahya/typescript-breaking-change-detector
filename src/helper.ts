@@ -27,12 +27,6 @@ import { parse } from "@typescript-eslint/typescript-estree";
 import SourceCode from "./sourcecode";
 import { FunctionExpression, FunctionTypeNode } from "typescript";
 
-
-export function getIdExceptRangeAndLoc(node: BaseNode) {
-  const { range, loc, ...rest } = node;
-  return rest;
-}
-
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
   return currentCode.body.find(
     (statement) => {
@@ -63,10 +57,6 @@ export function checkIfFunctionParametersAreValid(functionInPrevCode, functionIn
   return true
 }
 
-export function checkOptionalBeSame(itemInPrevCode, itemInCurrentCode) {
-  return itemInCurrentCode.optional !== itemInPrevCode.optional;
-}
-
 export function checkReturnTypeBeSameForTsDeclareFunction(itemInPrevCode, itemInCurrentCode) {
   return (
     itemInCurrentCode.returnType.typeAnnotation.type ===
@@ -74,31 +64,10 @@ export function checkReturnTypeBeSameForTsDeclareFunction(itemInPrevCode, itemIn
   );
 }
 
-export function isPropertyFunction(property) {
-  return property.typeAnnotation.typeAnnotation.type === "TSFunctionType";
-}
-
-export function getSameProperty(peropertyInprevCode, currentCode) {
-  return currentCode.body.find(
-    (statement) => statement.key.name === peropertyInprevCode.key.name
-  );
-}
-
 export function checkAndThrowError(error) {
   if (error) {
     throw new Error(error);
   }
-}
-
-export function getSameClassDeclaration(
-  classDeclarationInPrevCode: ClassDeclaration,
-  classDeclarationInCurrentCode
-): ClassDeclaration {
-  return classDeclarationInCurrentCode.body.find(
-    (declaration) =>
-      declaration.type === "ClassDeclaration" &&
-      declaration.id.name === classDeclarationInPrevCode.id.name
-  );
 }
 
 export function getSameNodeForClass(
@@ -124,13 +93,6 @@ export function checkClassPropertyBeTheSame(property1, property2) {
 
 export function getErrorInfo(type, info) {
   return `${type} - ${info}`;
-}
-
-export function inValidDeclareErrorForTest(type, message) {
-  return {
-    isValid: false,
-    info: chalk.red("Error: " + getErrorInfo(type, message)),
-  };
 }
 
 export function pareCode(code: string) {

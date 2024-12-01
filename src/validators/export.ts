@@ -14,9 +14,8 @@ import {
 	ClassExpression
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator, { getPropertyDetailsErrorForInterface } from "./interface";
-import classValidator, { validateClassProperties } from "./class";
+import { validateClassProperties } from "./class";
 import { getFunctionDetailsError } from "./tsDeclareFunction";
-import { getVariableDetailError } from "./variableValidator";
 import { checkAllPrevEnumMembersExist } from "./enum";
 import { getPropertyDetailsErrorForTypeAlias } from "./typeAlias";
 import { AST } from "@typescript-eslint/typescript-estree";

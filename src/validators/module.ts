@@ -8,6 +8,6 @@ export default function moduleValidator(content: Context , moduleDeclarationInPr
     currentCode
   );
   if (!sameInterfaceInDeclarationInCurrentCode) {
-    return getErrorInfo(MODULE_REMOVED, content.getTextForPrevSource(moduleDeclarationInPrevCode));
+    return getErrorInfo(MODULE_REMOVED, `module "${(moduleDeclarationInPrevCode as any).id.value}"`);
   }
 }

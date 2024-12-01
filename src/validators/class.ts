@@ -13,25 +13,8 @@ import {
   checkClassPropertyBeTheSame,
   Context,
   getErrorInfo,
-  getSameClassDeclaration,
   getSameNodeForClass,
 } from "../helper";
-export default function classValidator(
-  context: Context,
-  classDeclarationInPrevCode: ClassDeclaration,
-  currentCode
-) {
-  const sameClass = getSameClassDeclaration(classDeclarationInPrevCode ,currentCode.body);
-
-  if (!sameClass) {
-    return getErrorInfo(
-      CLASS_REMOVED,
-      `Class ${classDeclarationInPrevCode.id.name} was removed.`
-    );
-  }
-
-  return validateClassProperties(context, classDeclarationInPrevCode, sameClass as ClassDeclaration);
-}
 
 export function validateClassProperties(
   context: Context,

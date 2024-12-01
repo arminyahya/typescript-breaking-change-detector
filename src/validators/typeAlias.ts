@@ -8,11 +8,9 @@ import {
 } from "../constants/errors";
 import {
   checkIfFunctionParametersAreValid,
-  checkOptionalBeSame,
   Context,
   getErrorInfo,
   getSameTypeDeclaration,
-  isPropertyFunction,
 } from "../helper";
 
 export default function TypeAliasValidator(

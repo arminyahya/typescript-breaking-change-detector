@@ -5,41 +5,68 @@ import {
 import {
   Identifier,
   VariableDeclaration,
+  VariableDeclarator,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import { AST } from "@typescript-eslint/typescript-estree";
 import { Context, getErrorInfo } from "../helper";
 
 export default function variableValidator(
-	context: Context,
+  context: Context,
   prevVar: VariableDeclaration,
-  currentCode: AST<any>
+  currentCode
 ) {
   for (const declaration of prevVar.declarations) {
     if (declaration.id.type === "Identifier") {
       const sameVariableInCodeB = currentCode.body.find((statement) => {
         if (statement.type === "VariableDeclaration") {
-          for (const declaration2 of statement.declarations) {
-            return context.getTextForCurrentSource(declaration2 as unknown as VariableDeclaration)  === context.getTextForPrevSource(declaration);
-          }
+          return statement.declarations.some((currentDecl) =>
+            areTypesCompatible(
+              context,
+              declaration,
+              currentDecl
+            )
+          );
         }
+        return false;
       });
+
       if (!sameVariableInCodeB) {
-				return getErrorInfo(VARIABLE_CHANGED_OR_REMOVED, context.getTextForPrevSource(declaration));
+        return getErrorInfo(
+          VARIABLE_CHANGED_OR_REMOVED,
+          context.getTextForPrevSource(
+            declaration
+          )
+        );
       }
     }
   }
+
+  return null;
 }
 
-export function getVariableDetailError(
-  variableDeclarationInPrevCode: VariableDeclaration,
-  variableDeclarationInCurrentCode: VariableDeclaration
-) {
-  for (const propertyInPrevCode of variableDeclarationInPrevCode.declarations) {
-    const samePropertyInCurrentCode = variableDeclarationInCurrentCode.declarations.find(
-      (property) => property === propertyInPrevCode
-    );
-    if (!samePropertyInCurrentCode) {
-      return PROPERTY_CHANGED;
-    }
+function areTypesCompatible(
+  context: Context,
+  prevDecl: VariableDeclarator,
+  currentDecl: VariableDeclarator
+): boolean {
+  const prevType = context.getTextForPrevSource(prevDecl);
+  const currentType = context.getTextForCurrentSource(currentDecl);
+
+  // If either type is missing, treat as incompatible
+  if (!prevType || !currentType) {
+    return false;
   }
+
+  // Allowable non-breaking changes
+  return isTypeAssignable(prevType, currentType);
+}
+
+function isTypeAssignable(prevType: string, currentType: string): boolean {
+  // Check for compatibility (basic example)
+  if (currentType.includes(prevType)) {
+    return true;
+  }
+
+  // Extend this logic for more robust type comparison
+  return false;
 }

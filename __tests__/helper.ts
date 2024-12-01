@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import isNewDeclarationValid from "../src";
-import { generateContext, getErrorInfo, inValidDeclareErrorForTest, pareCode } from "../src/helper";
+import { generateContext, getErrorInfo, pareCode } from "../src/helper";
 
 function getTwoParsedCodeAndContext(code1: string, code2: string) {
   const parsedPrevCode = pareCode(code1);
