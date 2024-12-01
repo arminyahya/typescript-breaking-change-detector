@@ -39,7 +39,6 @@ export function getPropertyDetailsErrorForTypeAlias(
   typeInPrevCode,
   typeInCurrentCode
 ) {
-  console.log(typeInPrevCode);
   if (typeInPrevCode.typeAnnotation.type === 'TSUnionType' || typeInPrevCode.typeAnnotation.type === 'TSIntersectionType') {
     return compareUnionOrIntersectionMembers(context, typeInPrevCode.typeAnnotation.types, typeInCurrentCode.typeAnnotation.types, typeInPrevCode.id.name)
   } else {
