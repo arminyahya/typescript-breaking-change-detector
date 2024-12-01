@@ -14,9 +14,8 @@ import {
 	ClassExpression
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import InterfaceValidator, { getPropertyDetailsErrorForInterface } from "./interface";
-import classValidator, { getClassPropertyDetailError } from "./class";
+import { validateClassProperties } from "./class";
 import { getFunctionDetailsError } from "./tsDeclareFunction";
-import { getVariableDetailError } from "./variableValidator";
 import { checkAllPrevEnumMembersExist } from "./enum";
 import { getPropertyDetailsErrorForTypeAlias } from "./typeAlias";
 import { AST } from "@typescript-eslint/typescript-estree";
@@ -32,7 +31,7 @@ export default function ExportValidator(
   } else {
     switch (exportDelarationInPrevCode.declaration.type as keyof typeof AST_NODE_TYPES) {
       case AST_NODE_TYPES.ClassDeclaration:
-				return getClassPropertyDetailError(context,exportDelarationInPrevCode.declaration as ClassDeclaration, (sameExport as ExportNamedDeclaration).declaration as ClassDeclaration)
+				return validateClassProperties(context,exportDelarationInPrevCode.declaration as ClassDeclaration, (sameExport as ExportNamedDeclaration).declaration as ClassDeclaration)
       case AST_NODE_TYPES.ClassExpression:
         break;
 			case AST_NODE_TYPES.TSDeclareFunction:

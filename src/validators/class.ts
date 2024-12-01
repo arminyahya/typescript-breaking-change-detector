@@ -7,77 +7,37 @@ import {
   CLASS_METHOD_REMOVED,
   CLASS_REMOVED,
   PROPERTY_CHANGED,
+  PROPERTY_REMOVED,
 } from "../constants/errors";
 import {
   checkClassPropertyBeTheSame,
   Context,
   getErrorInfo,
-  getSameClassDeclaration,
-  getSameMethodForClass,
-  getSamePropertyForClass,
+  getSameNodeForClass,
 } from "../helper";
 
-export default function classValidator(
-	context: Context,
-  classDeclarationInPrevCode: ClassDeclaration,
-  currentCode
+export function validateClassProperties(
+  context: Context,
+  prevClass: ClassDeclaration,
+  currentClass: ClassDeclaration
 ) {
-  const sameClassInDeclarationB = getSameClassDeclaration(
-    classDeclarationInPrevCode,
-    currentCode
-  );
-  if (!sameClassInDeclarationB) {
-    return getErrorInfo(CLASS_REMOVED, classDeclarationInPrevCode.id.name);
-  }
-  return getClassPropertyDetailError( context ,classDeclarationInPrevCode, sameClassInDeclarationB);
-}
+  for (const member of prevClass.body.body) {
+    const sameMember =  getSameNodeForClass(member, currentClass);
 
-export function getClassPropertyDetailError(
-	context: Context,	
-  classDeclarationInPrevCode: ClassDeclaration,
-  classDeclarationInCurrentCode: ClassDeclaration
-) {
-  for (const propertyInPrevCode of classDeclarationInPrevCode.body.body) {
-    switch (propertyInPrevCode.type) {
-      case AST_NODE_TYPES.PropertyDefinition: {
-        const samePropertyInOtherClass = getSamePropertyForClass(
-          propertyInPrevCode,
-          classDeclarationInCurrentCode
-        );
-        if (!samePropertyInOtherClass) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
-        }
+    if (!sameMember) {
+      return getErrorInfo(
+        PROPERTY_REMOVED,
+        `Property or method ${context.getTextForPrevSource(member)} is missing in ${prevClass.id.name}`
+      );
+    }
 
-        if (!checkClassPropertyBeTheSame(propertyInPrevCode, samePropertyInOtherClass)) {
-          return getErrorInfo(PROPERTY_CHANGED, `property ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
-        }
-        break;
-      }
-      case AST_NODE_TYPES.MethodDefinition:
-        {
-          const sameMehodInOtherClass = getSameMethodForClass(
-            propertyInPrevCode,
-            classDeclarationInCurrentCode
-          );
-          if (!sameMehodInOtherClass) {
-            return getErrorInfo(CLASS_METHOD_REMOVED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
-          }
-
-          if (!checkClassPropertyBeTheSame(propertyInPrevCode, sameMehodInOtherClass)) {
-            return getErrorInfo(CLASS_METHOD_CHANGED, `method ${context.getTextForPrevSource(propertyInPrevCode)} in class ${classDeclarationInPrevCode.id.name}`);
-          }
-        }
-        break;
-      case AST_NODE_TYPES.StaticBlock:
-        break;
-      case AST_NODE_TYPES.TSAbstractMethodDefinition:
-        break;
-      case AST_NODE_TYPES.TSAbstractPropertyDefinition:
-        break;
-      case AST_NODE_TYPES.TSIndexSignature:
-        break;
-      default:
-        break;
+    if (!checkClassPropertyBeTheSame(member, sameMember)) {
+      return getErrorInfo(
+        PROPERTY_CHANGED,
+        `Property or method ${context.getTextForPrevSource(member)} has changed in ${prevClass.id.name}`
+      );
     }
   }
+
+  return null;
 }

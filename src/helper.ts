@@ -27,16 +27,10 @@ import { parse } from "@typescript-eslint/typescript-estree";
 import SourceCode from "./sourcecode";
 import { FunctionExpression, FunctionTypeNode } from "typescript";
 
-
-export function getIdExceptRangeAndLoc(node: BaseNode) {
-  const { range, loc, ...rest } = node;
-  return rest;
-}
-
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
   return currentCode.body.find(
     (statement) => {
-      return JSON.stringify(getIdExceptRangeAndLoc(statement.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
+      return statement.id.name === typeInPrevCode.id.name
     }
   );
 }
@@ -63,24 +57,10 @@ export function checkIfFunctionParametersAreValid(functionInPrevCode, functionIn
   return true
 }
 
-export function checkOptionalBeSame(itemInPrevCode, itemInCurrentCode) {
-  return itemInCurrentCode.optional !== itemInPrevCode.optional;
-}
-
 export function checkReturnTypeBeSameForTsDeclareFunction(itemInPrevCode, itemInCurrentCode) {
   return (
-    JSON.stringify(itemInCurrentCode.returnType.typeAnnotation.type) ===
-    JSON.stringify(itemInPrevCode.returnType.typeAnnotation.type)
-  );
-}
-
-export function isPropertyFunction(property) {
-  return property.typeAnnotation.typeAnnotation.type === "TSFunctionType";
-}
-
-export function getSameProperty(peropertyInprevCode, currentCode) {
-  return currentCode.body.find(
-    (statement) => statement.key.name === peropertyInprevCode.key.name
+    itemInCurrentCode.returnType.typeAnnotation.type ===
+    itemInPrevCode.returnType.typeAnnotation.type
   );
 }
 
@@ -90,36 +70,14 @@ export function checkAndThrowError(error) {
   }
 }
 
-export function getSameClassDeclaration(
-  classDeclarationInPrevCode: ClassDeclaration,
-  classDeclarationInCurrentCode
-): ClassDeclaration {
-  return classDeclarationInCurrentCode.body.find(
-    (declaration) =>
-      declaration.type === "ClassDeclaration" &&
-      declaration.id.name === classDeclarationInPrevCode.id.name
-  );
-}
-
-export function getSamePropertyForClass(
-  propertyInPrevCode,
-  classDeclarationInCurrentCode: ClassDeclaration
+export function getSameNodeForClass(
+  nodeInPrevClass: BaseNode,
+  classDeclarationInCurrentCode: ClassDeclaration,
 ) {
   return classDeclarationInCurrentCode.body.body.find(
     (item) =>
-      item.type === AST_NODE_TYPES.PropertyDefinition &&
-      (item as any).key.name === propertyInPrevCode.key.name
-  );
-}
-
-export function getSameMethodForClass(
-  propertyInPrevCode,
-  classDeclarationInCurrentCode: ClassDeclaration
-) {
-  return classDeclarationInCurrentCode.body.body.find(
-    (item) =>
-      item.type === AST_NODE_TYPES.MethodDefinition &&
-      (item as any).key.name === propertyInPrevCode.key.name
+      item.type === nodeInPrevClass.type &&
+      (item as any).key.name === (nodeInPrevClass as any).key.name
   );
 }
 
@@ -135,21 +93,6 @@ export function checkClassPropertyBeTheSame(property1, property2) {
 
 export function getErrorInfo(type, info) {
   return `${type} - ${info}`;
-}
-
-export function objectToFormatedString(object) {
-  return JSON.stringify(object, null, 2);
-}
-
-export function addChalkPrefixToString(str) {
-  return "Error: " + str;
-}
-
-export function inValidDeclareErrorForTest(type, message) {
-  return {
-    isValid: false,
-    info: chalk.red("Error: " + getErrorInfo(type, message)),
-  };
 }
 
 export function pareCode(code: string) {
