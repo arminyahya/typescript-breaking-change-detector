@@ -12,7 +12,6 @@ import {
   getErrorInfo,
   getSameTypeDeclaration,
   isPropertyFunction,
-  objectToFormatedString,
 } from "../helper";
 
 export default function TypeAliasValidator(

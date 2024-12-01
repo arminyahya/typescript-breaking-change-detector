@@ -5,7 +5,6 @@ import {
 	getErrorInfo,
   getSameTypeDeclaration,
 	isPropertyFunction,
-	objectToFormatedString,
 } from "../helper";
 
 import {TSInterfaceDeclaration, TSCallSignatureDeclaration, TSPropertySignature, TSConstructSignatureDeclaration, TSMethodSignature} from "@typescript-eslint/types/dist/generated/ast-spec";

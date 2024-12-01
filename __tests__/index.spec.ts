@@ -13,7 +13,6 @@ import {
   VARIABLE_CHANGED_OR_REMOVED,
 } from "../src/constants/errors";
 import {
-  addChalkPrefixToString,
   generateContext,
   getErrorInfo,
   inValidDeclareErrorForTest,
