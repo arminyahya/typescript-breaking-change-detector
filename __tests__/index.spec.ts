@@ -9,6 +9,7 @@ import {
   MODULE_REMOVED,
   OPTIONAL_CHANGED,
   PROPERTY_CHANGED,
+  PROPERTY_REMOVED,
   RETURN_TYPE_CHANGED,
   VARIABLE_CHANGED_OR_REMOVED,
 } from "../src/constants/errors";
@@ -180,8 +181,8 @@ export type A = {
 export class Person {
 }
 `,
-    PROPERTY_CHANGED,
-    "property name: string in class Person"
+    PROPERTY_REMOVED,
+    `Property or method name:string is missing in Person`,
   );
 
   testRunner(
@@ -197,7 +198,7 @@ export class Person {
 	}
 `,
     PROPERTY_CHANGED,
-    "property name: string in class Person"
+    `Property or method name:string has changed in Person`,
   );
 
   testRunner(
@@ -212,8 +213,8 @@ export class MyMath {
 	total(a: number,b: number): void;
 }
 `,
-    CLASS_METHOD_REMOVED,
-    "method calc(a: number,b: number): void; in class MyMath"
+    PROPERTY_REMOVED,
+    "Property or method calc(a: number,b: number): void; is missing in MyMath"
   );
   
   testRunner(
@@ -228,8 +229,8 @@ export class MyMath {
 			calc(a: number): void;
 		}
 `,
-    CLASS_METHOD_CHANGED,
-    "method calc(a: number,b: number): void; in class MyMath"
+    PROPERTY_CHANGED,
+    "Property or method calc(a: number,b: number): void; has changed in MyMath"
   );
 
   
