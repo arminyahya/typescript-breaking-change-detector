@@ -101,25 +101,14 @@ export function getSameClassDeclaration(
   );
 }
 
-export function getSamePropertyForClass(
-  propertyInPrevCode,
-  classDeclarationInCurrentCode: ClassDeclaration
+export function getSameNodeForClass(
+  nodeInPrevClass: BaseNode,
+  classDeclarationInCurrentCode: ClassDeclaration,
 ) {
   return classDeclarationInCurrentCode.body.body.find(
     (item) =>
-      item.type === AST_NODE_TYPES.PropertyDefinition &&
-      (item as any).key.name === propertyInPrevCode.key.name
-  );
-}
-
-export function getSameMethodForClass(
-  propertyInPrevCode,
-  classDeclarationInCurrentCode: ClassDeclaration
-) {
-  return classDeclarationInCurrentCode.body.body.find(
-    (item) =>
-      item.type === AST_NODE_TYPES.MethodDefinition &&
-      (item as any).key.name === propertyInPrevCode.key.name
+      item.type === nodeInPrevClass.type &&
+      (item as any).key.name === (nodeInPrevClass as any).key.name
   );
 }
 
