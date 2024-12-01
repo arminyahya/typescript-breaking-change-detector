@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
-	"bin": {
-		"definitionguard":"./dist/cli/index.js"
-	},
+  "bin": {
+    "definitionguard": "./dist/cli/index.js"
+  },
   "scripts": {
     "eslint": "eslint --fix src",
     "test": "jest"
@@ -26,10 +26,13 @@
     "commander": "9.1.0",
     "fs-extra": "10.0.1",
     "typescript": "4.6.2",
-    "utill": "0.1.3"
+    "utill": "0.1.3",
+    "winston": "^3.17.0"
   },
-		"publishConfig": {
-			"registry": "http://localhost:4873"
-		},
-	"files": ["dist"]
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  },
+  "files": [
+    "dist"
+  ]
 }
