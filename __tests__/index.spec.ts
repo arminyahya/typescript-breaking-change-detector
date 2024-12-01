@@ -347,4 +347,29 @@ export class MyMath {
     VARIABLE_CHANGED_OR_REMOVED,
     "myVar: number"
   );
+
+testRunner(
+  "Union type member removed",
+  `
+  export type MyUnion = "a" | "b" | "c";
+  `,
+  `
+  export type MyUnion = "a" | "b";
+  `,
+  PROPERTY_CHANGED,
+  `Member "c" is missing in type MyUnion`,
+);
+
+testRunner(
+  "Intersection Type Member Added",
+  `
+  export type MyIntersection = A & B;
+  `,
+  `
+  export type MyIntersection = A & B & C;
+  `,
+  PROPERTY_CHANGED,
+`New member was added to type MyIntersection`,
+)
+
 });
