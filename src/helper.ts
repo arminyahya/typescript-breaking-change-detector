@@ -36,7 +36,7 @@ export function getIdExceptRangeAndLoc(node: BaseNode) {
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
   return currentCode.body.find(
     (statement) => {
-      return JSON.stringify(getIdExceptRangeAndLoc(statement.id)) === JSON.stringify(getIdExceptRangeAndLoc(typeInPrevCode.id))
+      return statement.id.name === typeInPrevCode.id.name
     }
   );
 }
@@ -69,8 +69,8 @@ export function checkOptionalBeSame(itemInPrevCode, itemInCurrentCode) {
 
 export function checkReturnTypeBeSameForTsDeclareFunction(itemInPrevCode, itemInCurrentCode) {
   return (
-    JSON.stringify(itemInCurrentCode.returnType.typeAnnotation.type) ===
-    JSON.stringify(itemInPrevCode.returnType.typeAnnotation.type)
+    itemInCurrentCode.returnType.typeAnnotation.type ===
+    itemInPrevCode.returnType.typeAnnotation.type
   );
 }
 
@@ -135,14 +135,6 @@ export function checkClassPropertyBeTheSame(property1, property2) {
 
 export function getErrorInfo(type, info) {
   return `${type} - ${info}`;
-}
-
-export function objectToFormatedString(object) {
-  return JSON.stringify(object, null, 2);
-}
-
-export function addChalkPrefixToString(str) {
-  return "Error: " + str;
 }
 
 export function inValidDeclareErrorForTest(type, message) {

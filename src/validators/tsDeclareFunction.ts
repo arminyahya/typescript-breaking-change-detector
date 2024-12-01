@@ -1,5 +1,5 @@
 import { FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, RETURN_TYPE_CHANGED } from '../constants/errors';
-import { checkIfFunctionParametersAreValid, checkReturnTypeBeSameForTsDeclareFunction, Context, getErrorInfo, getSameTypeDeclaration, objectToFormatedString } from '../helper';
+import { checkIfFunctionParametersAreValid, checkReturnTypeBeSameForTsDeclareFunction, Context, getErrorInfo, getSameTypeDeclaration } from '../helper';
 
 export default function tsDeclareFunctionValidator( context: Context, functionDeclarationInPrevCode, currentCode) {
 	const sameFunctionInDeclarationInCurrentCode = getSameTypeDeclaration(

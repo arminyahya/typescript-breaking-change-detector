@@ -9,7 +9,6 @@ import {
   getErrorInfo,
   getSameProperty,
   isPropertyFunction,
-  objectToFormatedString,
 } from "../helper";
 
 export default function propertyValidator(context, propertyInPrevCode, currentCode) {
