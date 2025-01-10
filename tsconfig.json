@@ -1,18 +1,20 @@
 {
 	"compilerOptions": {
-		 "lib": [
-				"es6"
-		 ],
-		 "target": "es6",
-		 "module": "commonjs",
-		 "moduleResolution": "node",
-		 "outDir": "dist",
-		 "resolveJsonModule": true,
-		 "emitDecoratorMetadata": true,
-		 "esModuleInterop": true,
-		 "experimentalDecorators": true,
-		 "sourceMap": true
+	  "target": "es6", // Use ES6 as the output language.
+	  "module": "commonjs", // CommonJS for Node.js compatibility.
+	  "outDir": "./dist", // Output directory for compiled files.
+	  "declaration": true, // Generate .d.ts files for type definitions.
+	  "declarationDir": "./dist/types", // Store declarations separately.
+	  "moduleResolution": "node", // Resolve modules like Node.js.
+	  "strict": true, // Enable strict type-checking options.
+	  "esModuleInterop": true, // Enable interop for ES6 and CommonJS.
+	  "forceConsistentCasingInFileNames": true, // Enforce consistent casing.
+	  "skipLibCheck": true, // Skip library type checking.
+	  "sourceMap": true, // Generate source maps for debugging.,
+	  "strictNullChecks": false,
+	  "noImplicitAny": false
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules", "__tests__"]
-}
+	"include": ["src/**/*"], // Include your source files.
+	"exclude": ["node_modules", "dist"] // Exclude unnecessary files.
+  }
+  
