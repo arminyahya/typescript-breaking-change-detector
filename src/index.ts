@@ -1,14 +1,30 @@
 import { AST, AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { ASTWithContext, Context, checkAndThrowError } from "./helper";
+import { ASTWithContext, Context, checkAndThrowError, generateContext } from "./helper";
 import ExportValidator from "./validators/export";
 import InterfaceValidator from "./validators/interface";
 import TypeAliasValidator from "./validators/typeAlias";
-import { ExportNamedDeclaration, TSInterfaceDeclaration, TSModuleDeclaration, TSTypeAliasDeclaration, VariableDeclaration} from "@typescript-eslint/types/dist/generated/ast-spec";
+import { ExportNamedDeclaration, TSInterfaceDeclaration, TSModuleDeclaration, TSTypeAliasDeclaration, VariableDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
 import moduleValidator from "./validators/module";
 import variableValidator from "./validators/variableValidator";
 import chalk from "chalk";
+import { parse } from "@typescript-eslint/typescript-estree";
 
-export default function isNewDeclarationValid(context: Context , prevCode: AST<any>, currentCode: AST<any>) {
+export function isNewDeclarationValidByCodesText(prevCode: string, currentCode: string) {
+  const context = generateContext(prevCode, currentCode);
+  const prevParsedCode = parse(prevCode, {
+    loc: true,
+    range: true,
+  });
+
+  const currentParsedCode = parse(currentCode, {
+    loc: true,
+    range: true,
+  });
+
+  return isNewDeclarationValid(context, prevParsedCode, currentParsedCode);
+}
+
+export default function isNewDeclarationValid(context: Context, prevCode: AST<any>, currentCode: AST<any>) {
   try {
     for (const declarationInPrevCode of prevCode.body) {
       switch (declarationInPrevCode.type as keyof typeof AST_NODE_TYPES) {
