@@ -2,10 +2,13 @@ const path = require('path');
 
 module.exports = {
   mode: 'production', // Use 'development' for debugging or 'production' for release.
-  entry: './src/index.ts', // Entry point of your library.
+  entry: {
+    index: './src/index.ts',
+  cli: './src/cli/index.ts',
+  }, // Entry point of your library.
   output: {
     path: path.resolve(__dirname, 'dist'), // Output directory.
-    filename: 'index.js', // Output file name.
+    filename: '[name].js', // Output file name.
     library: {
       type: 'commonjs2', // CommonJS for Node.js usage.
     },
