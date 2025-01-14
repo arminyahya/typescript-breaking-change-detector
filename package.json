@@ -1,16 +1,17 @@
 {
   "name": "typescript-breaking-change-detector",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "main": "./dist/index.js",
   "types": "./dist/types",
   "license": "MIT",
   "bin": {
-    "typescriptBreakingChangeDetector": "./dist/cli/index.js"
+    "typescriptBreakingChangeDetector": "./bin/index.js"
   },
   "scripts": {
     "eslint": "eslint --fix src",
     "test": "jest",
-    "build": "webpack"
+    "build": "webpack",
+    "publish-patch": "npm version patch && npm publish"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
@@ -38,6 +39,8 @@
     "registry": "http://localhost:4873"
   },
   "files": [
-    "dist"
+    "dist/index.js",
+    "dist/cli.js",
+    "dist/types"
   ]
 }
