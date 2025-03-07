@@ -3,7 +3,7 @@ name: ESLint and Tests
 on: [pull_request]
 
 jobs:
-  eslint:
+  Analyze Code:
     runs-on: ubuntu-latest
 
     steps:
