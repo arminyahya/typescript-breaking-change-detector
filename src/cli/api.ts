@@ -4,6 +4,7 @@ import areDeclareFilesValid from "../compare-declare-files";
 import { CONFIG_FILENAME, PREV_DECLARATION_PATH } from "../constants/filenames";
 import declarationSnapShotMaker from "../declare-snapshot-maker";
 import { readFileSync } from "fs";
+import chalk from "chalk";
 
 interface ApiConfig {
   projectRoot: string;
@@ -24,7 +25,7 @@ export default function api(config: ApiConfig) {
 		if(validationResult.isValid) {
 			declarationSnapShotMaker({ projectRoot, declarationFiles });
 		} else {
-			console.info(validationResult.info);
+			chalk.red(validationResult.info);
 		}
 	}
 }

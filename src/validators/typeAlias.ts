@@ -48,7 +48,7 @@ export function getPropertyDetailsErrorForTypeAlias(
       } else {
 
         switch (member.typeAnnotation?.typeAnnotation?.type) {
-          case 'TSFunctionType':
+          case 'TSFunctionType': {
             const valid = checkIfFunctionParametersAreValid(member.typeAnnotation.typeAnnotation, sameMemberInCurrentCode.typeAnnotation.typeAnnotation);
             if (!valid) {
               return getErrorInfo(
@@ -56,6 +56,7 @@ export function getPropertyDetailsErrorForTypeAlias(
                 `function parameter changed in type ${typeInPrevCode.id.name}`
               );
             }
+          }
             break;
 
           /* other cases need to implement */
