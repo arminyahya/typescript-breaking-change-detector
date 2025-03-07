@@ -1,6 +1,6 @@
 {
   "name": "typescript-breaking-change-detector",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "./dist/index.js",
   "types": "./dist/types",
   "license": "MIT",
