@@ -1,28 +1,8 @@
 import {
-  AST_NODE_TYPES,
   ClassDeclaration,
-  ClassExpression,
-  ExportDeclaration,
-  FunctionDeclaration,
-  MethodDefinition,
-  PropertyDefinition,
-  PropertyDefinitionNonComputedName,
-  StaticBlock,
-  TSAbstractMethodDefinition,
-  TSAbstractPropertyDefinition,
-  TSDeclareFunction,
-  TSEnumDeclaration,
-  TSIndexSignature,
-  TSInterfaceDeclaration,
-  TSModuleDeclaration,
-  TSTypeAliasDeclaration,
-  VariableDeclaration,
-  MethodDefinitionNonComputedName,
   BaseNode,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import { AST } from "@typescript-eslint/typescript-estree";
-import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/ast-spec";
-import chalk from "chalk";
 import { parse } from "@typescript-eslint/typescript-estree";
 import SourceCode from "./sourcecode";
 
@@ -40,7 +20,7 @@ export function checkIfFunctionParametersAreValid(functionInPrevCode, functionIn
     return false;
   }
 
-  for (let pIndex in functionInCurrentCode.params) {
+  for (const pIndex in functionInCurrentCode.params) {
     const param = functionInCurrentCode.params[pIndex];
     const paramInPrevCode = functionInPrevCode.params[pIndex];
     if (paramInPrevCode) {

@@ -1,5 +1,5 @@
 import { AST, AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { ASTWithContext, Context, checkAndThrowError, generateContext } from "./helper";
+import { Context, checkAndThrowError, generateContext } from "./helper";
 import ExportValidator from "./validators/export";
 import InterfaceValidator from "./validators/interface";
 import TypeAliasValidator from "./validators/typeAlias";

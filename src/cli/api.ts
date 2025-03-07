@@ -5,7 +5,6 @@ import { CONFIG_FILENAME, PREV_DECLARATION_PATH } from "../constants/filenames";
 import declarationSnapShotMaker from "../declare-snapshot-maker";
 import { readFileSync } from "fs";
 
-/* eslint-disable @typescript-eslint/no-var-requires */
 interface ApiConfig {
   projectRoot: string;
 }
@@ -25,7 +24,7 @@ export default function api(config: ApiConfig) {
 		if(validationResult.isValid) {
 			declarationSnapShotMaker({ projectRoot, declarationFiles });
 		} else {
-			console.log(validationResult.info);
+			console.info(validationResult.info);
 		}
 	}
 }

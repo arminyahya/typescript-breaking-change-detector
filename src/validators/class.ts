@@ -1,11 +1,7 @@
 import {
-  AST_NODE_TYPES,
   ClassDeclaration,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
 import {
-	CLASS_METHOD_CHANGED,
-  CLASS_METHOD_REMOVED,
-  CLASS_REMOVED,
   PROPERTY_CHANGED,
   PROPERTY_REMOVED,
 } from "../constants/errors";

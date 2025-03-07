@@ -1,10 +1,7 @@
 import { TSIntersectionType, TSTypeAliasDeclaration, TSUnionType } from "@typescript-eslint/types/dist/generated/ast-spec";
 import {
   ALIASTYPE_REMOVED,
-  FUNCTION_PARAMETER_CHANGED,
-  OPTIONAL_CHANGED,
   PROPERTY_CHANGED,
-  RETURN_TYPE_CHANGED,
 } from "../constants/errors";
 import {
   checkIfFunctionParametersAreValid,
@@ -41,7 +38,7 @@ export function getPropertyDetailsErrorForTypeAlias(
     return compareUnionOrIntersectionMembers(context, typeInPrevCode.typeAnnotation.types, typeInCurrentCode.typeAnnotation.types, typeInPrevCode.id.name)
   } else {
 
-    for (let member of typeInPrevCode.typeAnnotation.members) {
+    for (const member of typeInPrevCode.typeAnnotation.members) {
       const sameMemberInCurrentCode = typeInCurrentCode.typeAnnotation.members.find(m => m.key.name === member.key.name);
       if (!sameMemberInCurrentCode) {
         return getErrorInfo(

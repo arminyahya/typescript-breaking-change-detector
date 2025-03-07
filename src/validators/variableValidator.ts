@@ -1,9 +1,7 @@
 import {
-  PROPERTY_CHANGED,
   VARIABLE_CHANGED_OR_REMOVED,
 } from "../constants/errors";
 import {
-  Identifier,
   VariableDeclaration,
   VariableDeclarator,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
