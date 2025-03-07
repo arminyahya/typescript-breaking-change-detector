@@ -8,6 +8,7 @@ import moduleValidator from "./validators/module";
 import variableValidator from "./validators/variableValidator";
 import chalk from "chalk";
 import { parse } from "@typescript-eslint/typescript-estree";
+export { default as api } from './cli/api';
 
 export function isNewDeclarationValidByCodesText(prevCode: string, currentCode: string) {
   const context = generateContext(prevCode, currentCode);

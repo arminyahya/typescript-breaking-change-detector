@@ -2,4 +2,3 @@
 const cli = require('../dist/cli').default
 
 cli();
- 

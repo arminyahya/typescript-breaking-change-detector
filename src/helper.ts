@@ -25,7 +25,6 @@ import { ExportNamedDeclaration } from "@typescript-eslint/types/dist/generated/
 import chalk from "chalk";
 import { parse } from "@typescript-eslint/typescript-estree";
 import SourceCode from "./sourcecode";
-import { FunctionExpression, FunctionTypeNode } from "typescript";
 
 export function getSameTypeDeclaration(typeInPrevCode, currentCode) {
   return currentCode.body.find(

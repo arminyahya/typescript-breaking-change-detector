@@ -1,40 +1,40 @@
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  mode: 'production', // Use 'development' for debugging or 'production' for release.
+  mode: 'production',
   entry: {
     index: './src/index.ts',
   cli: './src/cli/index.ts',
-  }, // Entry point of your library.
+  },
   output: {
-    path: path.resolve(__dirname, 'dist'), // Output directory.
-    filename: '[name].js', // Output file name.
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
     library: {
-      type: 'commonjs2', // CommonJS for Node.js usage.
+      type: 'commonjs2',
     },
   },
   resolve: {
-    extensions: ['.ts', '.js'], // Resolve these file extensions.
+    extensions: ['.ts', '.js'],
   },
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader', // Transpile TypeScript to JavaScript.
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
-      // {
-      //   test: /\.js$/,
-      //   use: 'source-map-loader', // Handle source maps for debugging.
-      //   enforce: 'pre',
-      // },
+ 
     ],
   },
-  devtool: 'source-map', // Generate source maps for debugging.
-  target: 'node', // Ensure compatibility with Node.js.
+  devtool: 'source-map',
+  target: 'node',
   externals: {
-    // Prevent bundling Node.js built-in modules like 'os' or 'fs'.
     os: 'commonjs os',
     fs: 'commonjs fs',
+    typescript: 'typescript'
   },
+  plugins: [
+    // new BundleAnalyzerPlugin()
+  ]
 };

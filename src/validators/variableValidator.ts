@@ -7,7 +7,6 @@ import {
   VariableDeclaration,
   VariableDeclarator,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
-import { AST } from "@typescript-eslint/typescript-estree";
 import { Context, getErrorInfo } from "../helper";
 
 export default function variableValidator(
