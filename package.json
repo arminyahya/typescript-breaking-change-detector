@@ -10,6 +10,7 @@
   "scripts": {
     "eslint": "eslint --fix src",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "build": "webpack",
     "publish-patch": "npm version patch && npm publish"
   },

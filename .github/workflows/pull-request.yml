@@ -1,4 +1,4 @@
-name: ESLint
+name: ESLint and Tests
 
 on: [pull_request]
 
@@ -16,7 +16,10 @@ jobs:
         node-version: '20.16.0'
 
     - name: Install dependencies
-      run: npm install
+      run: npm install --force
 
     - name: Run ESLint
       run: npm run eslint
+
+    - name: Run Tests
+      run: npm run test:coverage
