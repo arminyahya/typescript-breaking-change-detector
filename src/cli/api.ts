@@ -26,8 +26,8 @@ export default function api(config: ApiConfig) {
 		if(validationResult.isValid) {
 			declarationSnapShotMaker({ projectRoot, declarationFiles });
 		} else {
-			chalk.red(validationResult.info);
-			throw error('Above error detected during Typescript breaking change detector code analyzing');
+			console.error(validationResult.info)
+			throw new error('Error detected during Typescript breaking change detector code analyzing');
 		}
 	}
 }
