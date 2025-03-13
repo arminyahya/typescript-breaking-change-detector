@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import api from "./api";
 import { Command } from "commander";
 
@@ -10,7 +11,7 @@ export default function cli(): void {
     const projectRoot = program.getOptionValue("project");
     api({ projectRoot: projectRoot });
   } catch (error) {
-    console.error(error);
+    console.error(chalk.red(error));
     process.exit(1);
   }
 }
