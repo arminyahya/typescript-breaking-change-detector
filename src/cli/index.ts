@@ -10,6 +10,7 @@ export default function cli(): void {
     const projectRoot = program.getOptionValue("project");
     api({ projectRoot: projectRoot });
   } catch (error) {
+    console.error(error);
     process.exit(1);
   }
 }
