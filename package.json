@@ -49,5 +49,8 @@
     "dist/cli.js",
     "dist/types",
     "bin"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  }
 }
