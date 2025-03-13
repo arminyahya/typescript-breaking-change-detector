@@ -5,7 +5,11 @@ const program = new Command();
 program.option("--project, --project <dir>");
 program.parse();
 
-export default function cli() {
-  const projectRoot = program.getOptionValue("project");
-  api({ projectRoot: projectRoot });
+export default function cli(): void {
+  try {
+    const projectRoot = program.getOptionValue("project");
+    api({ projectRoot: projectRoot });
+  } catch (error) {
+    process.exit(1);
+  }
 }
