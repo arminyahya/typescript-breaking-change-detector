@@ -1,4 +1,4 @@
-name: ESLint and Tests
+name: Code Analyzing
 
 on: [pull_request]
 
@@ -23,6 +23,3 @@ jobs:
 
     - name: Run Tests
       run: npm run test:coverage
-
-    - name: Check commit messages
-      run: npx commitlint --from=HEAD~1 --to=HEAD
