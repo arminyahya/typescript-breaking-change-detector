@@ -5,6 +5,7 @@ import { CONFIG_FILENAME, PREV_DECLARATION_PATH } from "../constants/filenames";
 import declarationSnapShotMaker from "../declare-snapshot-maker";
 import { readFileSync } from "fs";
 import chalk from "chalk";
+import { error } from "console";
 
 interface ApiConfig {
   projectRoot: string;
@@ -26,6 +27,7 @@ export default function api(config: ApiConfig) {
 			declarationSnapShotMaker({ projectRoot, declarationFiles });
 		} else {
 			chalk.red(validationResult.info);
+			throw error('Above error detected during Typescript breaking change detector code analyzing');
 		}
 	}
 }
