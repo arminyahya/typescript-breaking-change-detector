@@ -1,5 +1,5 @@
 import { AST, AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
-import { ASTWithContext, Context, checkAndThrowError, generateContext } from "./helper";
+import { Context, checkAndThrowError, generateContext } from "./helper";
 import ExportValidator from "./validators/export";
 import InterfaceValidator from "./validators/interface";
 import TypeAliasValidator from "./validators/typeAlias";
@@ -8,6 +8,7 @@ import moduleValidator from "./validators/module";
 import variableValidator from "./validators/variableValidator";
 import chalk from "chalk";
 import { parse } from "@typescript-eslint/typescript-estree";
+export { default as api } from './cli/api';
 
 export function isNewDeclarationValidByCodesText(prevCode: string, currentCode: string) {
   const context = generateContext(prevCode, currentCode);

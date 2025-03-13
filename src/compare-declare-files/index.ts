@@ -3,7 +3,6 @@ import { parse } from "@typescript-eslint/typescript-estree";
 import path from "path";
 import isNewDeclarationValid from "..";
 import { PREV_DECLARATION_PATH } from "../constants/filenames";
-import SourceCode from "../sourcecode";
 import { generateContext, pareCode } from "../helper";
 
 interface Config {

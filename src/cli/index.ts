@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import api from "./api";
 import { Command } from "commander";
 
@@ -5,7 +6,12 @@ const program = new Command();
 program.option("--project, --project <dir>");
 program.parse();
 
-export default function cli() {
-  const projectRoot = program.getOptionValue("project");
-  api({ projectRoot: projectRoot });
+export default function cli(): void {
+  try {
+    const projectRoot = program.getOptionValue("project");
+    api({ projectRoot: projectRoot });
+  } catch (error) {
+    console.error(chalk.red(error));
+    process.exit(1);
+  }
 }

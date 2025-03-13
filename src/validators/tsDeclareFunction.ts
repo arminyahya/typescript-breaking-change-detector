@@ -1,5 +1,5 @@
-import { FUNCTION_PARAMETER_CHANGED, FUNCTION_REMOVED, RETURN_TYPE_CHANGED } from '../constants/errors';
-import { checkIfFunctionParametersAreValid, checkReturnTypeBeSameForTsDeclareFunction, Context, getErrorInfo, getSameTypeDeclaration } from '../helper';
+import { FUNCTION_PARAMETER_CHANGED, RETURN_TYPE_CHANGED } from '../constants/errors';
+import { checkIfFunctionParametersAreValid, checkReturnTypeBeSameForTsDeclareFunction, Context, getErrorInfo } from '../helper';
 
 export function getFunctionDetailsError(context: Context,functionInPrevCode, functionInCurrentCode) {
 	if (!checkReturnTypeBeSameForTsDeclareFunction(functionInPrevCode, functionInCurrentCode)) {

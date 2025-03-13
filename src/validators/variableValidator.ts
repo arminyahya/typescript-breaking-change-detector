@@ -1,13 +1,10 @@
 import {
-  PROPERTY_CHANGED,
   VARIABLE_CHANGED_OR_REMOVED,
 } from "../constants/errors";
 import {
-  Identifier,
   VariableDeclaration,
   VariableDeclarator,
 } from "@typescript-eslint/types/dist/generated/ast-spec";
-import { AST } from "@typescript-eslint/typescript-estree";
 import { Context, getErrorInfo } from "../helper";
 
 export default function variableValidator(

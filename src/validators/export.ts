@@ -1,6 +1,5 @@
-import hasDeclarationBreakingChange from "..";
 import { EXPORT_REMOVED } from "../constants/errors";
-import {  Context, getErrorInfo, checkAndThrowError } from "../helper";
+import {  Context, getErrorInfo } from "../helper";
 import {
   AST_NODE_TYPES,
   ExportNamedDeclaration,
@@ -8,12 +7,11 @@ import {
   TSInterfaceDeclaration,
 	ClassDeclaration,
 	FunctionDeclaration,
-	VariableDeclaration,
 	TSDeclareFunction,
 	TSEnumDeclaration,
 	ClassExpression
 } from "@typescript-eslint/types/dist/generated/ast-spec";
-import InterfaceValidator, { getPropertyDetailsErrorForInterface } from "./interface";
+import { getPropertyDetailsErrorForInterface } from "./interface";
 import { validateClassProperties } from "./class";
 import { getFunctionDetailsError } from "./tsDeclareFunction";
 import { checkAllPrevEnumMembersExist } from "./enum";
