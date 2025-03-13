@@ -23,7 +23,8 @@ export default function areDeclareFilesValid({
       "utf8"
     );
     const pevParsedCode = pareCode(prevFileString);
-
+    console.log(fileName);
+    console.log(declarationFiles);
     const currentFile = declarationFiles.find((f) => f === fileName);
     if (!currentFile) {
       throw new Error("file removed!: " + fileName);
