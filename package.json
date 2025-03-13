@@ -1,6 +1,6 @@
 {
   "name": "typescript-breaking-change-detector",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "main": "./dist/index.js",
   "types": "./dist/types",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "publish-patch": "npm version patch && npm publish",
     "prepare": "husky install",
     "preversion": "npm run build",
-    "watch" : "webpack --watch"
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.0",
