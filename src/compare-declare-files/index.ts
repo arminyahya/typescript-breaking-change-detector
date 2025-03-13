@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "fs-extra";
 import { parse } from "@typescript-eslint/typescript-estree";
 import path from "path";
 import isNewDeclarationValid from "..";
-import { PREV_DECLARATION_PATH } from "../constants/filenames";
+import { PREV_DECLARATION_PATH, CONFIG_FILENAME } from "../constants/filenames";
 import { generateContext, pareCode } from "../helper";
 
 interface Config {
@@ -14,17 +14,17 @@ export default function areDeclareFilesValid({
   projectRoot,
   declarationFiles,
 }: Config) {
-  const prevDeclareFiles = readdirSync(
-    path.join(projectRoot, PREV_DECLARATION_PATH)
-  );
+  const configFilePath = path.join(projectRoot, CONFIG_FILENAME);
+  const configFile = readFileSync(configFilePath, "utf-8");
+  const { declarationFiles: prevDeclareFiles } = JSON.parse(configFile);
+
   for (const fileName of prevDeclareFiles) {
     const prevFileString = readFileSync(
       path.join(projectRoot, `${PREV_DECLARATION_PATH}/${fileName}`),
       "utf8"
     );
     const pevParsedCode = pareCode(prevFileString);
-    console.log(fileName);
-    console.log(declarationFiles);
+    
     const currentFile = declarationFiles.find((f) => f === fileName);
     if (!currentFile) {
       throw new Error("file removed!: " + fileName);
@@ -37,9 +37,9 @@ export default function areDeclareFilesValid({
       loc: true,
       range: true,
     });
-		const context = generateContext(prevFileString, currentFileString);
+    const context = generateContext(prevFileString, currentFileString);
     const validationResult = isNewDeclarationValid(
-			context,
+      context,
       pevParsedCode,
       currentParsedCode
     );
