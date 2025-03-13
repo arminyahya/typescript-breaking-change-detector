@@ -14,7 +14,7 @@
     "build": "webpack",
     "publish-patch": "npm version patch && npm publish",
     "prepare": "husky install",
-    "prepublish": "npm run build"
+    "preversion": "npm run build"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.0",
