@@ -1,6 +1,6 @@
 {
   "name": "typescript-breaking-change-detector",
-  "version": "0.0.27",
+  "version": "1.0.0-beta.0",
   "main": "./dist/index.js",
   "types": "./dist/types",
   "license": "MIT",
@@ -51,8 +51,5 @@
     "dist/cli.js",
     "dist/types",
     "bin"
-  ],
-  "publishConfig": {
-    "registry": "http://localhost:4873"
-  }
+  ]
 }
