@@ -82,7 +82,6 @@ export function sameExportInBoth(
     if (statement.type === AST_NODE_TYPES.ExportNamedDeclaration) {
       const prevDeclaration = exportDeclarationInPrevCode.declaration;
       const currentDeclaration = (statement as ExportNamedDeclaration).declaration;
-      console.log(prevDeclaration)
 
       if (prevDeclaration.type === currentDeclaration.type) {
         if (prevDeclaration.type === AST_NODE_TYPES.VariableDeclaration) {
