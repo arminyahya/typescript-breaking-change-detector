@@ -1,4 +1,4 @@
-import { TSIntersectionType, TSTypeAliasDeclaration, TSUnionType } from "@typescript-eslint/types/dist/generated/ast-spec";
+import { TSIntersectionType, TSTypeAliasDeclaration, TSUnionType, TSTypeReference } from "@typescript-eslint/types/dist/generated/ast-spec";
 import {
   ALIASTYPE_REMOVED,
   PROPERTY_CHANGED,
@@ -35,9 +35,17 @@ export function getPropertyDetailsErrorForTypeAlias(
   typeInCurrentCode
 ) {
   if (typeInPrevCode.typeAnnotation.type === 'TSUnionType' || typeInPrevCode.typeAnnotation.type === 'TSIntersectionType') {
-    return compareUnionOrIntersectionMembers(context, typeInPrevCode.typeAnnotation.types, typeInCurrentCode.typeAnnotation.types, typeInPrevCode.id.name)
+    return compareUnionOrIntersectionMembers(context, typeInPrevCode.typeAnnotation.types, typeInCurrentCode.typeAnnotation.types, typeInPrevCode.id.name);
+  } else if (typeInPrevCode.typeAnnotation.type === 'TSTypeReference') {
+    const prevTypeText = context.getTextForPrevSource(typeInPrevCode.typeAnnotation);
+    const currentTypeText = context.getTextForCurrentSource(typeInCurrentCode.typeAnnotation);
+    if (prevTypeText !== currentTypeText) {
+      return getErrorInfo(
+        PROPERTY_CHANGED,
+        `Type reference changed in type ${typeInPrevCode.id.name}`
+      );
+    }
   } else {
-
     for (const member of typeInPrevCode.typeAnnotation.members) {
       const sameMemberInCurrentCode = typeInCurrentCode.typeAnnotation.members.find(m => m.key.name === member.key.name);
       if (!sameMemberInCurrentCode) {
@@ -46,7 +54,6 @@ export function getPropertyDetailsErrorForTypeAlias(
           `property changed in type ${typeInPrevCode.id.name}`
         );
       } else {
-
         switch (member.typeAnnotation?.typeAnnotation?.type) {
           case 'TSFunctionType': {
             const valid = checkIfFunctionParametersAreValid(member.typeAnnotation.typeAnnotation, sameMemberInCurrentCode.typeAnnotation.typeAnnotation);

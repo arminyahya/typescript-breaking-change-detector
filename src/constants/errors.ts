@@ -14,6 +14,8 @@ export const ENUM_MEMBERS_CHANGED = 'A Enum changed!';
 export const MODULE_REMOVED = 'A Module removed!';
 export const VARIABLE_CHANGED_OR_REMOVED = 'A Variable changed or removed!';
 export const PROPERTY_REMOVED = 'A Property removed!';
+export const MAPPED_TYPES_CHANGED = 'A Mapped type changed!';
+
 
 
 

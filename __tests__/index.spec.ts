@@ -6,6 +6,7 @@ import {
   EXPORT_REMOVED,
   FUNCTION_PARAMETER_CHANGED,
   FUNCTION_REMOVED,
+  MAPPED_TYPES_CHANGED,
   MODULE_REMOVED,
   OPTIONAL_CHANGED,
   PROPERTY_CHANGED,
@@ -446,6 +447,16 @@ export class MyMath {
   `,
     PROPERTY_CHANGED,
     `New member was added to type MyIntersection`,
+  )
+
+  testRunner(
+    "Tool is not breaking when having MappedType",
+    `
+  export type $defs = Record<string, never>;;
+  `,
+    `
+  export type $defs = Record<string, never>;
+  `,
   )
 
 });
