@@ -102,9 +102,6 @@ Generates clear error messages for detected breaking changes, helping developers
 #### Detailed Reporting:
 Provide more context in error messages, such as locations and suggestions.
 
-#### CLI Tool:
-Run the detector via a command-line interface.
-
 ## Contributing
 Contributions are welcome! Feel free to fork the repository, suggest improvements, or add new features.
 
